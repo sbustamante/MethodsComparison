@@ -19,11 +19,9 @@ DATESTAMP=`date +'%Y-%m-%d'`
 #Bench
 BENCH = bench
 #Folder of Codes for Analysis
-ACODESFOLD = codes_analysis
-#Folder of Codes for Figures
-FCODESFOLD = codes_figures
-#Folder of data for Figures
-DATAFOLD = data_figures
+ACODESFOLD = codes
+#Folder of data
+DATAFOLD = data
 
 
 pdflatex:	$(FILE_TEX).tex  
@@ -66,5 +64,5 @@ help:
 		@echo -e '\tview:\t\t view the pdf file with standard viewer ($(VIEWER))'
 		@echo -e '\tedit:\t\t edit the tex file with standard editor ($(TEXEDIT))'
 		@echo -e '\tupdate:\t\t update all files to github repository'
-		@echo -e '\tcompile:\t compile the required c codes in $(ACODESFOLD) and $(FCODESFOLD)'
+		@echo -e '\tcompile:\t compile the required c codes in $(ACODESFOLD)'
 		@echo -e '\thelp:\t\t this help!'
