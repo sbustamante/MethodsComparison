@@ -31,7 +31,7 @@ codesfold = "./"
 #..................................................................................................
 def slide( snapbase, snap, files, axis, coor, dx, sampling ):
     #Running code
-    os.system( "%s/Cutter.out %s__%d %d %d %f %f %d temp.tmp",\
+    os.system( "%s/Cutter.out %s__%03d %d %d %f %f %d temp.tmp"%\
     (codesfold,snapbase, snap, files, axis, coor, dx, sampling) )
     data = np.loadtxt( "temp.tmp" )
     os.system( "rm temp.tmp" )

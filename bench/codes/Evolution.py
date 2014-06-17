@@ -5,7 +5,7 @@
 #
 #by: Sebastian Bustamante
 
-execfile('_Head.py')
+execfile('_head.py')
 
 #==================================================================================================
 #			PARAMETERS
@@ -26,7 +26,7 @@ sampling = 10
 #Axis [0-X  1-Y  2-Z]
 axis = 0
 #Slide	[kpc h^-1]
-slide = 10000
+coor = 10000
 #Thick	[kpc h^-1]
 dx = 1000
 
@@ -43,9 +43,10 @@ partsize = 0.2
 for snap in xrange( snaps ):
     #Image size
     plt.figure( figsize=(10,8) )
+    plt.subplots_adjust( left = 0.0, bottom = 0.0, right = 1.0, top = 1.0 )
     
     #Loading data of current snap
-    partsnap = slide( "%s/%s/%s"%(datafold,simulation,snapbase), \
+    partsnap = slide( "%s/%s/%s"%(datafold,simulation,snapbase),\
     snap, snapfiles, axis, coor, dx, sampling )
     
     #Background
@@ -63,9 +64,8 @@ for snap in xrange( snaps ):
 
     plt.xlim( (0,Box) )
     plt.ylim( (0,Box) )
-    fname='_tmp-%03d.png'%i
+    fname='_tmp-%03d.png'%snap
     plt.savefig(fname)
-    files.append(fname)
     plt.close()
 
 #Making the video
