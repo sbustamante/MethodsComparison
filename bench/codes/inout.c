@@ -106,7 +106,7 @@ int read_snap( char snapbase[NMAX1],
     FILE *pf_out;
         
     printf("==========================================================================\n");
-    printf(" Reading from gadget file %s, %d \n",filename);
+    printf(" Reading from gadget file %s \n",filename);
     printf("==========================================================================\n");
     
     //Sweeping all component files of this snapshot
