@@ -1,0 +1,39 @@
+#==================================================================================================
+#			HEADERS
+#==================================================================================================
+from __future__ import division
+from struct import *
+import numpy as np
+import sys
+import os
+import random
+import matplotlib.pyplot as plt
+import scipy.integrate as integ
+import scipy.interpolate as interp
+plt.close("all")
+
+
+#==================================================================================================
+#			VARIABLES
+#==================================================================================================
+#Data Fold
+datafold = "../../../box20VPH/"
+#Codes Fold
+codesfold = "./"
+
+
+#==================================================================================================
+#			FUNCTIONS
+#==================================================================================================
+
+#..................................................................................................
+# Cutting the simulation box
+#..................................................................................................
+def slide( snapbase, snap, files, axis, coor, dx, sampling ):
+    #Running code
+    os.system( "%s/Cutter.out %s__%d %d %d %f %f %d temp.tmp",\
+    (codesfold,snapbase, snap, files, axis, coor, dx, sampling) )
+    data = np.loadtxt( "temp.tmp" )
+    os.system( "rm temp.tmp" )
+    
+    return data
