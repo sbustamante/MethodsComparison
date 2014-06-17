@@ -13,7 +13,6 @@
 int main( int argc, char *argv[] )
 {
     int i, file_snap, sampling;
-    struct part *Part, *cut;
     long int n_slide;
     
     int axis;

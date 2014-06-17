@@ -10,7 +10,6 @@
 int main( int argc, char *argv[] )
 {
     int i, file_snap, sampling;
-    struct part *Part;
     
     char snapbase[NMAX1], output[NMAX1];
 
@@ -23,6 +22,9 @@ int main( int argc, char *argv[] )
     //Output filename
     sprintf( output, "%s", argv[4] );
         
+    //Reading data from Gadget file
+    Npart_snap = read_snap( snapbase, file_snap );
+    
     //Writing data
     ascii_data( Part, Npart_snap, output, sampling );
     
