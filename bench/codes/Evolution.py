@@ -22,6 +22,8 @@ snaps = 136
 snapfiles = 1
 #Sampling rate
 sampling = 1
+#Type of print (gas-0	all-1)
+type = 1
 
 #Axis [0-X  1-Y  2-Z]
 axis = 0

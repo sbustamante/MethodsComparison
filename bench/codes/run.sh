@@ -7,6 +7,7 @@ SLIDE=10000
 DX=1000
 SAMPLING=10
 OUTPUT="temp.tmp"
+TYPE=1 			#[ 0-gas	1-all ]
 
 #Running Cutter [ 1 ]
 if [ $1 -eq 1 ]; then
@@ -18,7 +19,7 @@ if [ $1 -eq 1 ]; then
     fi
 
     #Running code
-    time ./Cutter.out $SNAPBASE $SNAPFILES $AXIS $SLIDE $DX $SAMPLING $OUTPUT
+    time ./Cutter.out $SNAPBASE $SNAPFILES $AXIS $SLIDE $DX $SAMPLING $OUTPUT $TYPE
 
 #Running Ascii [ 2 ]
 elif [ $1 -eq 2 ]; then
@@ -30,6 +31,6 @@ elif [ $1 -eq 2 ]; then
     fi
 
     #Running code
-    time ./Ascii.out $SNAPBASE $SNAPFILES $SAMPLING $OUTPUT
+    time ./Ascii.out $SNAPBASE $SNAPFILES $SAMPLING $OUTPUT $TYPE
     
 fi

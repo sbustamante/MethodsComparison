@@ -8,11 +8,12 @@
  	   *	<dx> 				[Mpc h^-1]
  	   *	<density of data sampling>
  	   *	<output filename> 
+	   *	<0-gas or 1-all> 
 */
 
 int main( int argc, char *argv[] )
 {
-    int i, file_snap, sampling;
+    int i, file_snap, sampling, type;
     long int n_slide;
     
     int axis;
@@ -33,15 +34,23 @@ int main( int argc, char *argv[] )
     sampling = atoi( argv[6] );
     //Output filename
     sprintf( output, "%s", argv[7] );
+    //Type of data
+    type = atoi( argv[5] );
     
     //Reading data from Gadget file
-    Npart_snap = read_snap_gas( snapbase, file_snap );
+    if( type == 0 )	//Gas
+	Npart_snap = read_snap_gas( snapbase, file_snap );
+    else		//All
+	Npart_snap = read_snap_all( snapbase, file_snap );
 
     //Cutting box
     n_slide = cut_box( axis, slide, dx );
     
     //Writing data
-    ascii_data_gas( cutted, n_slide, output, sampling );
+    if( type == 0 )	//Gas
+	ascii_data_gas( cutted, Npart_snap, output, sampling );
+    else		//All
+	ascii_data_all( cutted, Npart_snap, output, sampling );
     
     return 0;
 }

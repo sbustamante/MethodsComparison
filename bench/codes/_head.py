@@ -29,10 +29,10 @@ codesfold = "./"
 #..................................................................................................
 # Cutting the simulation box
 #..................................................................................................
-def slide( snapbase, snap, files, axis, coor, dx, sampling ):
+def slide( snapbase, snap, files, axis, coor, dx, sampling, type ):
     #Running code
-    os.system( "%s/Cutter.out %s__%03d %d %d %f %f %d temp.tmp"%\
-    (codesfold,snapbase, snap, files, axis, coor, dx, sampling) )
+    os.system( "%s/Cutter.out %s__%03d %d %d %f %f %d temp.tmp %d"%\
+    (codesfold,snapbase, snap, files, axis, coor, dx, sampling, type) )
     data = np.loadtxt( "temp.tmp" )
     os.system( "rm temp.tmp" )
     
