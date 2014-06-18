@@ -11,7 +11,7 @@ execfile('_head.py')
 #			PARAMETERS
 #==================================================================================================
 #Simulation
-simulation = "SPH_128/"
+simulation = "SPH_64/"
 #Box lenght [kpc h^-1]
 Box = 20000
 #Snapbase
@@ -74,4 +74,4 @@ for snap in xrange( snaps ):
 print 'Making movie animation.mpg - this make take a while'
 os.system("ffmpeg -qscale 1 -r 10 -b 9600 -i _tmp-%03d.png  video.mp4")
 #Deleting temporal images
-#os.system('rm -rf *.png')
+os.system('rm -rf *.png')
