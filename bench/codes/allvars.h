@@ -24,6 +24,9 @@ struct part{
     float pos[3];
     float vel[3];
     int id;
+    float mass;
+    float energy;
+    float rho;
     };
 
     
@@ -39,7 +42,8 @@ struct part{
 struct part *Part, *cutted;
 //Number of particles in current snap
 int Npart_snap;
-
+//Number of particles in current snap with variable masses
+int Npart_snap_mass;
 
 /**************************************************************************************************
 			      HEADERS

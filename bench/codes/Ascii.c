@@ -23,10 +23,10 @@ int main( int argc, char *argv[] )
     sprintf( output, "%s", argv[4] );
         
     //Reading data from Gadget file
-    Npart_snap = read_snap( snapbase, file_snap );
+    Npart_snap = read_snap_gas( snapbase, file_snap );
     
     //Writing data
-    ascii_data( Part, Npart_snap, output, sampling );
+    ascii_data_gas( Part, Npart_snap, output, sampling );
     
     return 0;
 }

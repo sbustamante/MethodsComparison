@@ -35,13 +35,13 @@ int main( int argc, char *argv[] )
     sprintf( output, "%s", argv[7] );
     
     //Reading data from Gadget file
-    Npart_snap = read_snap( snapbase, file_snap );
+    Npart_snap = read_snap_gas( snapbase, file_snap );
 
     //Cutting box
     n_slide = cut_box( axis, slide, dx );
     
     //Writing data
-    ascii_data( cutted, n_slide, output, sampling );
+    ascii_data_gas( cutted, n_slide, output, sampling );
     
     return 0;
 }

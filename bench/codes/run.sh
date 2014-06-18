@@ -1,11 +1,11 @@
 #!/bin/bash
 
-SNAPBASE="../data/snap__135"
+SNAPBASE="../data/SPH_snap__135"
 SNAPFILES=1
 AXIS=0
 SLIDE=10000
 DX=1000
-SAMPLING=1
+SAMPLING=10
 OUTPUT="temp.tmp"
 
 #Running Cutter [ 1 ]
