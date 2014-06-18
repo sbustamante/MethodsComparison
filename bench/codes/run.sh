@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SNAPBASE="../data/SPH_snap__135"
+SNAPBASE="/home/sbustamante/box20VPH/SPH_064/snap__010"
 SNAPFILES=1
 AXIS=0
 SLIDE=10000
