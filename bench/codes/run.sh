@@ -1,13 +1,13 @@
 #!/bin/bash
 
-SNAPBASE="../data/SPH_snap__135"
+SNAPBASE="/home/sbustamante/box20VPH/SPH_064/snap__010"
 SNAPFILES=1
 AXIS=0
 SLIDE=10000
 DX=1000
 SAMPLING=10
 OUTPUT="temp.tmp"
-TYPE=1 			#[ 0-gas	1-all ]
+TYPE=0 			#[ 0-gas	1-all ]
 
 #Running Cutter [ 1 ]
 if [ $1 -eq 1 ]; then
