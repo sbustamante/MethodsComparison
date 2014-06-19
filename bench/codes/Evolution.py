@@ -49,7 +49,7 @@ for snap in xrange( snaps ):
     
     #Loading data of current snap
     partsnap = slide( "%s/%s/%s"%(datafold,simulation,snapbase),\
-    snap, snapfiles, axis, coor, dx, sampling )
+    snap, snapfiles, axis, coor, dx, sampling, type )
     
     #Background
     plt.fill_between( [0,Box], [0,0], [Box,Box], color = backcolor )

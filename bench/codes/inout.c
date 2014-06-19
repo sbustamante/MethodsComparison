@@ -269,6 +269,8 @@ int read_snap_gas( char snapbase[NMAX1],
 	    Part[i].energy = energy;
 	    //Density
 	    Part[i].rho = rho;
+	    //Pressure
+	    Part[i].pressure = (GAMMA-1)*Part[i].rho*Part[i].energy;
 	    global_acum++;}
 
 	fclose(fp_pos);
@@ -439,14 +441,14 @@ int ascii_data_gas( struct part *parts,
     out = fopen( output, "w" );
 
     //Writing data
-    fprintf( out, "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tMass\t\tEnergy\t\tDensity\n" );
+    fprintf( out, "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tMass\t\tEnergy\t\tDensity\t\tPressure\n" );
     
     for( i=0;i<Npart;i+=sampling ){
-	fprintf( out, "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
+	fprintf( out, "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
 		 parts[i].id,
 		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z],
 		 parts[i].vel[X], parts[i].vel[Y], parts[i].vel[Z],
-		 parts[i].mass, parts[i].energy, parts[i].rho);}
+		 parts[i].mass, parts[i].energy, parts[i].rho, parts[i].pressure);}
     
     fclose( out );
     

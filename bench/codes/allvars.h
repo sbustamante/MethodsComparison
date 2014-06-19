@@ -27,6 +27,7 @@ struct part{
     float mass;
     float energy;
     float rho;
+    float pressure;
     };
 
     
@@ -37,6 +38,7 @@ struct part{
 #define X		0
 #define Y		1
 #define Z		2
+#define GAMMA		5.0/3
 
 //Particle arrays
 struct part *Part, *cutted;

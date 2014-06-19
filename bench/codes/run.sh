@@ -1,11 +1,12 @@
 #!/bin/bash
 
-SNAPBASE="/home/sbustamante/box20VPH/SPH_064/snap__010"
+# SNAPBASE="/home/sbustamante/box20VPH/SPH_064/snap__010"
+SNAPBASE="../data/SPH_snap__135"
 SNAPFILES=1
 AXIS=0
 SLIDE=10000
 DX=1000
-SAMPLING=10
+SAMPLING=1
 OUTPUT="temp.tmp"
 TYPE=0 			#[ 0-gas	1-all ]
 

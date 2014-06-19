@@ -15,3 +15,4 @@ are available:
     - **Cutter.out**: this functions selects particles within some given slide.
     - **Ascii.out**: this functions stores the particle data with some sampling rate in an ascii format file.
     - **Evolution.py**: this functions makes a video of the evolution of a slide of the simulation.
+    - **PhaseDiagram.py**: this functions makes a video of the evolution of the phase diagram of gas particles.
