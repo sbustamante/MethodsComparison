@@ -124,8 +124,8 @@ for snap in xrange( snaps ):
     plt.savefig(fname)
     plt.close()
 
-Making the video
+#Making the video
 print 'Making movie animation.mpg - this make take a while'
 os.system("ffmpeg -qscale 1 -r 10 -b 9600 -i _tmp-%03d.png  video.mp4")
-Deleting temporal images
+#Deleting temporal images
 os.system('rm -rf *.png')
