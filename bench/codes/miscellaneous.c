@@ -35,7 +35,59 @@ long int cut_box( int axis,
 		cutted[n].vel[coor] =  Part[i].vel[coor];}
 	    //Ids 
 	    cutted[n].id =  Part[i].id;
+	    
+	    //Mass
+	    cutted[n].mass = Part[i].mass;
+	    //Energy
+	    cutted[n].energy = Part[i].energy;
+	    //Density
+	    cutted[n].rho = Part[i].rho;
+	    //Pressure
+	    cutted[n].pressure = Part[i].pressure;
+	    //Temperature
+	    cutted[n].temperature = Part[i].temperature;
+	    
+	    //Redshift
+	    cutted[n].z = Part[i].z;
+	    //Time
+	    cutted[n].t = Part[i].t;
+	    
 	    n++;}
 	    
     return n;
+}
+
+
+/**************************************************************************************************
+ NAME:	     pressure
+ FUNCTION:   Calculate pressure of a gas particle
+ INPUTS:     density [ 10e10 h-1 Msun/(h-1 kpc)^3 ], internal energy [ (km/sec)^2 ]
+ RETURN:     pressure [ Pa/(h-1)^2 ]
+**************************************************************************************************/
+float pressure( float rho,
+		float energy )
+{
+    float P;
+    
+    //Pressure of an ideal gas
+    P = (GAMMA - 1)*(rho*U_RHO)*(energy*U_ENE);
+    
+    return P;
+}
+
+
+/**************************************************************************************************
+ NAME:	     temperature
+ FUNCTION:   Calculate pressure of a gas particle
+ INPUTS:     internal energy [ (km/sec)^2 ]
+ RETURN:     temperature [ K ]
+**************************************************************************************************/
+float temperature( float energy )
+{
+    float T;
+    
+    //Temperature of an ideal gas
+    T = ((GAMMA - 1)/K_B)*(MU*M_ATO)*(energy*U_ENE);
+  
+    return T;
 }

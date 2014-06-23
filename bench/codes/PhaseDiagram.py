@@ -27,7 +27,7 @@ type = 0
 
 #Gas properties
 properties = [ "Energy","Density","Pressure" ]	#Specific order of properties
-indexes = { "Energy":8, "Density":9, "Pressure":10 }
+indexes = { "Energy":8, "Density":9, "Pressure":10, "Temperature":11 }
 units = { "Energy":"(km/sec)$^2$",\
 	  "Density":"$10^{10}$ h$^{-1}$M$_{\odot}$/(h$^{-1}$ kpc)$^3$",\
 	  "Pressure":"." }

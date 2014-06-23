@@ -21,24 +21,38 @@ struct gadget_head{
 
 //Particle structure
 struct part{
+    //General properties
     float pos[3];
     float vel[3];
     int id;
+    //Gas properties
     float mass;
     float energy;
     float rho;
     float pressure;
+    float temperature;
+    //Simulation properties
+    float z;
+    float t;
     };
 
     
 /**************************************************************************************************
 			      MACROS AND GLOBAL VARIABLES
 **************************************************************************************************/
+//Numerical and internal macros
 #define NMAX1		1000
 #define X		0
 #define Y		1
 #define Z		2
-#define GAMMA		5.0/3
+
+//Physical macros
+#define GAMMA		5/3.0
+#define K_B		1.3806488e-23		// [ J K^{-1} ]
+#define M_ATO		1.660538921e-27		// [ Kg ]
+#define MU		1			// Hydrogen gas
+#define U_RHO		6.73928e-19		// [ 10e10 h-1 Msun/(h-1 kpc)^3 ] -> [ Kg/m^3 ]
+#define U_ENE		1e6			// [ (km/sec)^2 ] -> [ (m/sec)^2 ]
 
 //Particle arrays
 struct part *Part, *cutted;
@@ -46,6 +60,7 @@ struct part *Part, *cutted;
 int Npart_snap;
 //Number of particles in current snap with variable masses
 int Npart_snap_mass;
+
 
 /**************************************************************************************************
 			      HEADERS

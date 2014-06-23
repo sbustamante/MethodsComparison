@@ -8,7 +8,7 @@ SLIDE=10000
 DX=1000
 SAMPLING=1
 OUTPUT="temp.tmp"
-TYPE=0 			#[ 0-gas	1-all ]
+TYPE=0			#[ 0-gas	1-all ]
 
 #Running Cutter [ 1 ]
 if [ $1 -eq 1 ]; then

@@ -5,7 +5,8 @@ from __future__ import division
 from struct import *
 import numpy as np
 import sys
-import matplotlib
+import matplotlib as mpl
+#mpl.use('Agg')		#No X11 mode
 import os
 import matplotlib.pyplot as plt
 from pylab import *

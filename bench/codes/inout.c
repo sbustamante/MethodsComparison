@@ -180,7 +180,7 @@ int read_snap_gas( char snapbase[NMAX1],
 	printf( "Block %s\n", label );
 	blksize_ids += 3*sizeof(int)  + 1*4*sizeof(char);
 	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + Npart_snap*sizeof(int);
-	
+
 	//Mass
 	blksize_mss = blksize_all;
 	fseek(fp_mss,blksize_mss,SEEK_SET);
@@ -263,6 +263,7 @@ int read_snap_gas( char snapbase[NMAX1],
 	    Part[i].vel[2] = vel[2];
  	    //IDs
 	    Part[i].id = id;
+	    
 	    //Mass
 	    Part[i].mass = mass;
 	    //Energy
@@ -270,7 +271,15 @@ int read_snap_gas( char snapbase[NMAX1],
 	    //Density
 	    Part[i].rho = rho;
 	    //Pressure
-	    Part[i].pressure = (GAMMA-1)*Part[i].rho*Part[i].energy;
+	    Part[i].pressure = pressure( Part[i].rho, Part[i].energy );
+	    //Temperature
+	    Part[i].temperature = temperature( Part[i].energy );
+	    
+	    //Redshift
+	    Part[i].z = header1.redshift;
+	    //Time
+	    Part[i].t = header1.time;
+	    
 	    global_acum++;}
 
 	fclose(fp_pos);
@@ -408,6 +417,12 @@ int read_snap_all( char snapbase[NMAX1],
 	    Part[i].vel[2] = vel[2];
  	    //IDs
 	    Part[i].id = id;
+	    
+	    //Redshift
+	    Part[i].z = header1.redshift;
+	    //Time
+	    Part[i].t = header1.time;
+	    
 	    global_acum++;}
 
 	fclose(fp_pos);
@@ -441,14 +456,17 @@ int ascii_data_gas( struct part *parts,
     out = fopen( output, "w" );
 
     //Writing data
-    fprintf( out, "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tMass\t\tEnergy\t\tDensity\t\tPressure\n" );
+    fprintf( out, 
+    "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tMass\t\tEnergy\t\tDensity\t\tPressure\t\tz\t\ttime\n" );
     
     for( i=0;i<Npart;i+=sampling ){
-	fprintf( out, "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
+	fprintf( out, 
+		 "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
 		 parts[i].id,
 		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z],
 		 parts[i].vel[X], parts[i].vel[Y], parts[i].vel[Z],
-		 parts[i].mass, parts[i].energy, parts[i].rho, parts[i].pressure);}
+		 parts[i].mass, parts[i].energy, parts[i].rho, parts[i].pressure,
+		 parts[i].z, parts[i].t);}
     
     fclose( out );
     
@@ -474,13 +492,15 @@ int ascii_data_all( struct part *parts,
     out = fopen( output, "w" );
 
     //Writing data
-    fprintf( out, "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\n" );
+    fprintf( out, "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tz\t\ttime\n" );
     
     for( i=0;i<Npart;i+=sampling ){
-	fprintf( out, "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
+      printf("%d\n",i);
+	fprintf( out, "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
 		 parts[i].id,
 		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z],
-		 parts[i].vel[X], parts[i].vel[Y], parts[i].vel[Z]);}
+		 parts[i].vel[X], parts[i].vel[Y], parts[i].vel[Z],
+		 parts[i].z, parts[i].t);}
     
     fclose( out );
     

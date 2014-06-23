@@ -15,7 +15,7 @@ int main( int argc, char *argv[] )
 {
     int i, file_snap, sampling, type;
     long int n_slide;
-    
+
     int axis;
     float slide, dx;
     char snapbase[NMAX1], output[NMAX1];
@@ -35,8 +35,8 @@ int main( int argc, char *argv[] )
     //Output filename
     sprintf( output, "%s", argv[7] );
     //Type of data
-    type = atoi( argv[5] );
-    
+    type = atoi( argv[8] );
+
     //Reading data from Gadget file
     if( type == 0 )	//Gas
 	Npart_snap = read_snap_gas( snapbase, file_snap );
@@ -45,12 +45,12 @@ int main( int argc, char *argv[] )
 
     //Cutting box
     n_slide = cut_box( axis, slide, dx );
-    
+
     //Writing data
     if( type == 0 )	//Gas
-	ascii_data_gas( cutted, Npart_snap, output, sampling );
+	ascii_data_gas( cutted, n_slide, output, sampling );
     else		//All
-	ascii_data_all( cutted, Npart_snap, output, sampling );
-    
+	ascii_data_all( cutted, n_slide, output, sampling );
+
     return 0;
 }

@@ -7,3 +7,5 @@ int ascii_data_gas( struct part *, int, char *, int );
 
 //Miscellaneous Module
 long int cut_box( int, float, float );
+float pressure( float, float );
+float temperature( float );
