@@ -1,7 +1,14 @@
 #PhaseDiagram.py
 #
 #This code makes a video of the evolution of a slide of the simulation
-#Usage: PhaseDiagram.py
+#Usage: PhaseDiagram.py <TYPE OF DIAGRAM, format = XYC (X property, Y property, Coloured property)>
+#			<Plot (0) or video (1)> <number of snaps>
+#	R - density
+#	P - pressure
+#	T - temperature
+#	U - internal energy
+#	M - mass
+#Example: PhaseDiagram.py RPT 1
 #
 #by: Sebastian Bustamante
 
@@ -12,38 +19,64 @@ execfile('_head.py')
 #==================================================================================================
 #Simulation
 simulation = "SPH_64"
+#simulation = ""
 #Box lenght [kpc h^-1]
 Box = 20000
 #Snapbase
-snapbase = "SPH_snap"
+snapbase = "snap"
 #Number of snapshots
-snaps = 136
+snaps = int(sys.argv[3])
 #Number of files per snap
 snapfiles = 1
 #Sampling rate
-sampling = 2
+sampling = 1
 #Type of print (gas-0	all-1)
 type = 0
 
 #Gas properties
-properties = [ "Energy","Density","Pressure" ]	#Specific order of properties
-indexes = { "Energy":8, "Density":9, "Pressure":10, "Temperature":11 }
-units = { "Energy":"(km/sec)$^2$",\
-	  "Density":"$10^{10}$ h$^{-1}$M$_{\odot}$/(h$^{-1}$ kpc)$^3$",\
-	  "Pressure":"." }
+prop_dict = {"U":"Energy", "R":"Density", "P":"Pressure", "T":"Temperature", "M":"Mass"}
+units = { \
+"Energy":		"(km/sec)$^2$",\
+"Density":		"$10^{10}$ h$^{-1}$M$_{\odot}$/(h$^{-1}$ kpc)$^3$",\
+"Pressure":		"Pa",\
+"Temperature":		"K",\
+"Mass":			"$10^{10}$ h$^{-1}$M$_{\odot}$"}
+notat = { \
+"Energy":		"u",\
+"Density":		"$\\rho$",\
+"Pressure":		"P",\
+"Temperature":		"T",\
+"Mass":			"M"}	
+ranges = { \
+"Energy":		[ 0, 7 ],\
+"Density":		[ -12, 0 ],\
+"Pressure":		[ -22, -9 ],\
+"Temperature":		[ 2, 8 ],\
+"Mass":			[ -2, 2 ]}
+indexes = { "Energy":8, "Density":9, "Pressure":10, "Temperature":11, "Mass":7 }
+properties = [prop_dict[prop] for prop in sys.argv[1]]	#Specific order of properties
 
 #Window parameters
-prop1 = [ 0, 7 ]
-prop1_range = [0, 0.1, 0.2, 0.3, 0.4]
-prop2 = [ -11, -4 ]
-prop2_range = [0, 0.2, 0.4, 0.6]
-#Bins of histograms
-bins = 28.
+prop1 = ranges[properties[0]]	#X
+prop2 = ranges[properties[1]]	#Y
+prop3 = ranges[properties[2]]	#Color
+
+prop1_hist = 5
+prop2_hist = 5
+#Bins of 1D histograms
+bins = 28*2.
+#Bins of 2D histogram
+bins2D = 200.
 
 #==================================================================================================
 #			MAKING VIDEO OF EVOLUTION
 #==================================================================================================
-for snap in xrange( snaps ):
+if sys.argv[2] == "0":		#Plot
+    snaprange = [snaps]
+else:				#Video
+    snaprange = xrange( snaps )
+    
+for snap in snaprange:
     #Formating plot................................................................................
     #no labels
     nullfmt = NullFormatter()
@@ -74,17 +107,33 @@ for snap in xrange( snaps ):
     #Ordered properties
     property1 = np.log10(data[:,indexes[ properties[0] ]])
     property2 = np.log10(data[:,indexes[ properties[1] ]])
-    property3 = np.log10(data[:,indexes[ properties[2] ]])
+    property3 = data[:,indexes[ properties[2] ]]
 
     #Phase diagram
-    scatter2d = axHist2D.scatter( property1, property2, c=property3, s=2, marker='.',\
-    linewidth=0.01, cmap='hot')
+    ##Scatter.......................................................................................
+    #scatter2d = axHist2D.scatter( property1, property2, c=property3, s=2, marker='.',\
+    #linewidth=0.01, cmap='jet', vmin = prop3[0], vmax = prop3[1] );
+    ##Create the colorbar
+    #axc, kw = matplotlib.colorbar.make_axes( axHistx,\
+    #orientation = "vertical", shrink=1., pad=.04, aspect=10, anchor=(.5,1.5) )
+    #cb = matplotlib.colorbar.Colorbar( axc, scatter2d, orientation = "vertical" )
+    #cb.set_label( "log$_{10}$(%s  [%s])"%(notat[properties[2]],units[properties[2]]), \
+    #labelpad=-80, fontsize=12 )
+  
+    #Histogram2D...................................................................................
+    Hist_phase = np.transpose(np.histogram2d( property1, property2, weights = property3,
+    bins = bins2D, range = (prop1, prop2) )[0][::,::-1] )
+    map2d = axHist2D.imshow( np.log10(Hist_phase[::,::]), interpolation='nearest', aspect = 'auto',
+    cmap = 'jet', extent = (prop1[0],prop1[1],prop2[0],prop2[1]), vmin = prop3[0], vmax = prop3[1] )
     #Create the colorbar
     axc, kw = matplotlib.colorbar.make_axes( axHistx,\
     orientation = "vertical", shrink=1., pad=.04, aspect=10, anchor=(.5,1.5) )
-    cb = matplotlib.colorbar.Colorbar( axc, scatter2d, orientation = "vertical" )
-    cb.set_label( "log$_{10}$(%s  [%s])"%(properties[2],units[properties[2]]), \
-    labelpad=-60, fontsize=12 )
+    cb = matplotlib.colorbar.Colorbar( axc, map2d, orientation = "vertical" )
+    cb.set_label( "log$_{10}$(%s  [%s])"%(notat[properties[2]],units[properties[2]]), \
+    labelpad=-70, fontsize=12 )
+    ticks = np.linspace( prop3[0],prop3[1],9 )
+    cb.set_ticks( ticks )
+    cb.set_ticklabels( ['{0:3.1f}'.format(t) for t in ticks] )
     
     #Histogram X (Prop1)
     histx = np.histogram( property1, bins=bins, normed=True, range=prop1 )
@@ -95,37 +144,51 @@ for snap in xrange( snaps ):
     axHisty.barh( histy[1][:-1], histy[0], height = (prop2[1]-prop2[0])/bins,\
     linewidth=2.0, color="gray" )
     
-    #Plot format
+    #Plot format...................................................................................
     #Upper histogram
     axHistx.set_xlim( prop1 )
-    axHistx.set_xticks( np.linspace( prop1[0],prop1[1],bins/2.+1 ) )
-    axHistx.set_yticks( prop1_range )
+    axHistx.set_xticks( np.linspace( prop1[0],prop1[1],bins/4.+1 ) )
+    yticks = np.linspace( 0, np.max(histx[0]), prop1_hist+1 )
+    axHistx.set_yticks( yticks )
+    axHistx.set_yticklabels( ['{0:1.2f}'.format(yt) for yt in yticks] )
     axHistx.grid( color='black', linestyle='--', linewidth=1., alpha=0.3 )
     axHistx.set_ylabel( "Normed distribution" )
+    
     #Right histogram
     axHisty.set_ylim( prop2 )
-    axHisty.set_yticks( np.linspace( prop2[0],prop2[1],bins/2.+1 ) )
-    axHisty.set_xticks( prop2_range )
+    axHisty.set_yticks( np.linspace( prop2[0],prop2[1],bins/4.+1 ) )
+    xticks = np.linspace( 0, np.max(histy[0]), prop2_hist+1 )
+    axHisty.set_xticks( xticks )
+    axHisty.set_xticklabels( ['{0:1.2f}'.format(xt) for xt in xticks], rotation=-90 )
     axHisty.grid( color='black', linestyle='--', linewidth=1., alpha=0.3 )
     axHisty.set_xlabel( "Normed distribution" )
+    
     #2D Scatter
     axHist2D.grid( color='black', linestyle='--', linewidth=1., alpha=0.3 )
     axHist2D.set_xlim( prop1 )
     axHist2D.set_ylim( prop2 )
-    axHist2D.set_xticks( np.linspace( prop1[0],prop1[1],bins/4.+1 ) )
-    axHist2D.set_yticks( np.linspace( prop2[0],prop2[1],bins/4.+1 ) )
-    axHist2D.set_xlabel( "log$_{10}$(%s  [%s])"%(properties[0],units[properties[0]]) )
-    axHist2D.set_ylabel( "log$_{10}$(%s  [%s])"%(properties[1],units[properties[1]]) )
+    xticks = np.linspace( prop1[0],prop1[1],bins/4.+1 )
+    axHist2D.set_xticks( xticks, ['{0:1.2f}'.format(xt) for xt in xticks] )
+    yticks = np.linspace( prop2[0],prop2[1],bins/4.+1 )
+    axHist2D.set_yticks( yticks, ['{0:1.2f}'.format(yt) for yt in yticks] )
+    axHist2D.set_xlabel( "log$_{10}$(%s  [%s])"%(notat[properties[0]],units[properties[0]]) )
+    axHist2D.set_ylabel( "log$_{10}$(%s  [%s])"%(notat[properties[1]],units[properties[1]]) )
     axHist2D.legend( loc='upper right', fancybox=True, shadow=True, ncol = 1, prop={'size':10} )
-    axHist2D.text( prop1[1] - 0.5*(prop1[1]-prop1[0]),prop2[1] - 0.05*(prop2[1]-prop2[0]),\
-    "%s:snapshot %03d"%(simulation,snap), fontweight="bold" )
+    axHist2D.text( prop1[1] - 0.95*(prop1[1]-prop1[0]),prop2[1] - 0.08*(prop2[1]-prop2[0]),\
+    "%s:snapshot %03d\nz = %1.2f"%(simulation,snap,abs(data[0,12])), fontweight="bold", fontsize = 10 )
 
-    fname='_tmp-%03d.png'%snap
-    plt.savefig(fname)
-    plt.close()
+    if sys.argv[2] == "1":		#Video
+	fname='_tmp-%03d.png'%snap
+	plt.savefig(fname)
+	plt.close()
+
 
 #Making the video
-print 'Making movie animation.mpg - this make take a while'
-os.system("ffmpeg -qscale 1 -r 10 -b 9600 -i _tmp-%03d.png  video.mp4")
-#Deleting temporal images
-os.system('rm -rf *.png')
+if sys.argv[2] == "0":		#Plot
+    plt.savefig("Phase_diagram_%s.png"%(sys.argv[1]))
+    plt.show()
+else:				#Video
+    print 'Making movie animation.mpg - this make take a while'
+    os.system("ffmpeg -qscale 1 -r 10 -b 9600 -i _tmp-%03d.png  video.mp4")
+    #Deleting temporal images
+    os.system('rm -rf *.png')

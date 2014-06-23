@@ -457,7 +457,7 @@ int ascii_data_gas( struct part *parts,
 
     //Writing data
     fprintf( out, 
-    "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tMass\t\tEnergy\t\tDensity\t\tPressure\t\tz\t\ttime\n" );
+    "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tMass\t\tU\t\tRHO\t\tP\t\tT\t\tz\t\ttime\n" );
     
     for( i=0;i<Npart;i+=sampling ){
 	fprintf( out, 
