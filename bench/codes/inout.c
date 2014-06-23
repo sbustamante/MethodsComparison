@@ -461,11 +461,11 @@ int ascii_data_gas( struct part *parts,
     
     for( i=0;i<Npart;i+=sampling ){
 	fprintf( out, 
-		 "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
+		 "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
 		 parts[i].id,
 		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z],
 		 parts[i].vel[X], parts[i].vel[Y], parts[i].vel[Z],
-		 parts[i].mass, parts[i].energy, parts[i].rho, parts[i].pressure,
+		 parts[i].mass, parts[i].energy, parts[i].rho, parts[i].pressure, parts[i].temperature,
 		 parts[i].z, parts[i].t);}
     
     fclose( out );
