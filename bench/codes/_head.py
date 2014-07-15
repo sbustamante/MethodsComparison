@@ -19,8 +19,8 @@ plt.close("all")
 #			VARIABLES
 #==================================================================================================
 #Data Fold
-datafold = "../../../box20VPH/"
-#datafold = "../data/"
+#datafold = "../../../box20VPH/"
+datafold = "../data/"
 #Codes Fold
 codesfold = "./"
 

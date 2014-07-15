@@ -18,12 +18,12 @@ execfile('_head.py')
 #			PARAMETERS
 #==================================================================================================
 #Simulation
-simulation = "SPH_64"
-#simulation = ""
+#simulation = "SPH_64"
+simulation = ""
 #Box lenght [kpc h^-1]
 Box = 20000
 #Snapbase
-snapbase = "snap"
+snapbase = "VPH_snap"
 #Number of snapshots
 snaps = int(sys.argv[3])
 #Number of files per snap
