@@ -8,7 +8,7 @@
  	   *	<dx> 				[Mpc h^-1]
  	   *	<density of data sampling>
  	   *	<output filename> 
- 	   *	<0-all or 1-gas or 2-DM>
+	   *	<0-gas or 1-all> 
 */
 
 int main( int argc, char *argv[] )
@@ -38,14 +38,18 @@ int main( int argc, char *argv[] )
     type = atoi( argv[8] );
 
     //Reading data from Gadget file
-    Npart_snap = read_snap( snapbase, file_snap, type );
+    if( type == 0 )	//Gas
+	Npart_snap = read_snap_gas( snapbase, file_snap );
+    else		//All
+	Npart_snap = read_snap_all( snapbase, file_snap );
+
     //Cutting box
     n_slide = cut_box( axis, slide, dx );
 
     //Writing data
-    if( type == 1 )	//Gas
+    if( type == 0 )	//Gas
 	ascii_data_gas( cutted, n_slide, output, sampling );
-    else		//All or DM
+    else		//All
 	ascii_data_all( cutted, n_slide, output, sampling );
 
     return 0;

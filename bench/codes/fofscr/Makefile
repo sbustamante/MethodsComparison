@@ -17,6 +17,3 @@ main.o: main.c kd.h
 
 kd.o: kd.c kd.h tipsydefs.h
 	$(CC) $(CFLAGS) -c kd.c
-
-
-

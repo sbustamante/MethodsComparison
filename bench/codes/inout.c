@@ -76,14 +76,16 @@ int read_head( char *filename )
 
 
 /**************************************************************************************************
- NAME:	     read_snap_gas
+ NAME:	     read_snap
  FUNCTION:   This function reads a complete Gadget snap (only gas particles) file in format 2.
- INPUTS:     Snapbase of the current snapshot, number of single component files
+ INPUTS:     Snapbase of the current snapshot, number of single component files,
+	     type of particle to be read:   0-ALL      1-GAS      2-DARK MATTER
  RETURN:     number of particles in the snap (0 if some error)
  COMMENTS:   Based on the version by Juan Carlos Munoz-Cuartas
 **************************************************************************************************/
-int read_snap_gas( char snapbase[NMAX1], 
-		   int filenumber )
+int read_snap( char snapbase[NMAX1], 
+	       int filenumber,
+	       int type )
 {
     int i, s, dummi, global_acum = 0;
     
@@ -153,8 +155,7 @@ int read_snap_gas( char snapbase[NMAX1],
 	    Npart_snap += header1.npart[i];
 	    if( header1.mass[i] == 0.0 )
 		Npart_snap_mass += header1.npart[i];}
-		
-		
+				
 	//Seeking different blocks in the snapshot file in order to read them
 	blksize_all = 6*sizeof(int)  + 1*4*sizeof(char) + sizeof(header1);
 	//Position
@@ -241,7 +242,11 @@ int read_snap_gas( char snapbase[NMAX1],
 	fseek(fp_rho,blksize_rho,SEEK_SET);
 	
 	//Setting only gas particles
-	Npart_snap = header1.npart[0];
+	if( type == 1 )
+	    Npart_snap = header1.npart[0];
+	//Setting only dark matter particles
+	if( type == 2 )
+	    Npart_snap = header1.npart[1];
 	
 	//Reading positions, velocities and id of each particle	
 	for(i=0; i<Npart_snap ;i++){
@@ -264,16 +269,18 @@ int read_snap_gas( char snapbase[NMAX1],
  	    //IDs
 	    Part[i].id = id;
 	    
-	    //Mass
-	    Part[i].mass = mass;
-	    //Energy
-	    Part[i].energy = energy;
-	    //Density
-	    Part[i].rho = rho;
-	    //Pressure
-	    Part[i].pressure = pressure( Part[i].rho, Part[i].energy );
-	    //Temperature
-	    Part[i].temperature = temperature( Part[i].energy );
+	    //GAS PROPERTIES
+	    if( type == 1 ){
+		//Mass
+		Part[i].mass = mass;
+		//Energy
+		Part[i].energy = energy;
+		//Density
+		Part[i].rho = rho;
+		//Pressure
+		Part[i].pressure = pressure( Part[i].rho, Part[i].energy );
+		//Temperature
+		Part[i].temperature = temperature( Part[i].energy );}
 	    
 	    //Redshift
 	    Part[i].z = header1.redshift;
@@ -288,146 +295,6 @@ int read_snap_gas( char snapbase[NMAX1],
 	fclose(fp_mss);
 	fclose(fp_ene);
 	fclose(fp_rho);
-
-	printf("==========================================================================\n");
-	printf(" End of reading from gadget file %s, %d \n",filename, global_acum);
-	printf("==========================================================================\n");}
-
-    return Npart_snap;
-}
-
-
-/**************************************************************************************************
- NAME:	     read_snap_all
- FUNCTION:   This function reads a complete Gadget snap file in format 2.
- INPUTS:     Snapbase of the current snapshot, number of single component files
- RETURN:     number of particles in the snap (0 if some error)
- COMMENTS:   Based on the version by Juan Carlos Munoz-Cuartas
-**************************************************************************************************/
-int read_snap_all( char snapbase[NMAX1], 
-		   int filenumber )
-{
-    int i, s, dummi, global_acum = 0;
-    
-    int id;
-    float pos[3], vel[3];
-        
-    char label[4], filename[NMAX1];
-    long int blksize_all, blksize_pos, blksize_vel, blksize_ids;
-    
-    struct gadget_head header1;
-    
-    FILE *fp_pos;
-    FILE *fp_vel;
-    FILE *fp_ids;
-    
-    FILE *fp_head;
-    FILE *pf_out;
-        
-    printf("==========================================================================\n");
-    printf(" Reading from gadget file %s \n",filename);
-    printf("==========================================================================\n");
-    
-    //Sweeping all component files of this snapshot
-    for( s=0;s<filenumber;s++ ){
-
-	//Filename of current file
-	sprintf( filename,"%s.%d",snapbase,s );
-	if( filenumber == 1 )
-	    sprintf( filename,"%s",snapbase );
-	  
-	//Reading first file of the sequence for this snapshot
-	if( s==0 )
-	    read_head( filename );
-
-	//Openning current file
-	if( !(fp_head=fopen(filename,"r")) ){
-	    printf("read_gadget cannot open %s\n",filename);
-	    exit(0);}
-
-	//Different blocks of the Gadget snapshot file
-	fp_pos=fopen( filename,"r" );
-	fp_vel=fopen( filename,"r" );
-	fp_ids=fopen( filename,"r" );
-	
-	//Reading header of the s-th file of the current snapshot
-	fread(&dummi,sizeof(dummi),1,fp_head);
-	fread(&label,sizeof(char),4,fp_head);
-	fread(&dummi,sizeof(dummi),1,fp_head);
-	fread(&dummi,sizeof(dummi),1,fp_head);
-	fread(&dummi,sizeof(dummi),1,fp_head);
-	fread(&header1,sizeof(header1),1,fp_head);
-	fread(&dummi,sizeof(dummi),1,fp_head);
-	fclose(fp_head);
-	
-	//Counting number of particles (with and without variable masses)
-	Npart_snap = 0;
-	Npart_snap_mass = 0;
-	for(i=0; i<6; i++){
-	    Npart_snap += header1.npart[i];
-	    if( header1.mass[i] == 0.0 )
-		Npart_snap_mass += header1.npart[i];}
-		
-		
-	//Seeking different blocks in the snapshot file in order to read them
-	blksize_all = 6*sizeof(int)  + 1*4*sizeof(char) + sizeof(header1);
-	//Position
-	blksize_pos = blksize_all;
-	fseek(fp_pos,blksize_pos,SEEK_SET);
-	fread(&label,sizeof(char),4,fp_pos);
-	printf( "Block %s\n", label );
-	blksize_pos += 3*sizeof(int)  + 1*4*sizeof(char);
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + 3*Npart_snap*sizeof(float);
-	
-	//Velocities
-	blksize_vel = blksize_all;
-	fseek(fp_vel,blksize_vel,SEEK_SET);
-	fread(&label,sizeof(char),4,fp_vel);
-	printf( "Block %s\n", label );
-	blksize_vel += 3*sizeof(int)  + 1*4*sizeof(char);
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + 3*Npart_snap*sizeof(float);
-	
-	//Identifiers
-	blksize_ids = blksize_all;
-	fseek(fp_ids,blksize_ids,SEEK_SET);
-	fread(&label,sizeof(char),4,fp_ids);
-	printf( "Block %s\n", label );
-	blksize_ids += 3*sizeof(int)  + 1*4*sizeof(char);
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + Npart_snap*sizeof(int);
-		
-	//Seeking in files
-	fseek(fp_pos,blksize_pos,SEEK_SET);
-	fseek(fp_vel,blksize_vel,SEEK_SET);
-	fseek(fp_ids,blksize_ids,SEEK_SET);
-		
-	//Reading positions, velocities and id of each particle	
-	for(i=0; i<Npart_snap ;i++){
-	    //Reading from binary files
-	    fread(&pos[0],sizeof(float),3,fp_pos);
-	    fread(&vel[0],sizeof(float),3,fp_vel);
-	    fread(&id,sizeof(int),1,fp_ids);
-
-	    //Positions
-	    Part[i].pos[0] = pos[0];
-	    Part[i].pos[1] = pos[1];
-	    Part[i].pos[2] = pos[2];
- 	    //Velocities
-	    Part[i].vel[0] = vel[0];
-	    Part[i].vel[1] = vel[1];
-	    Part[i].vel[2] = vel[2];
- 	    //IDs
-	    Part[i].id = id;
-	    
-	    //Redshift
-	    Part[i].z = header1.redshift;
-	    //Time
-	    Part[i].t = header1.time;
-	    
-	    global_acum++;}
-
-	fclose(fp_pos);
-	fclose(fp_vel);
-	fclose(fp_ids);
 
 	printf("==========================================================================\n");
 	printf(" End of reading from gadget file %s, %d \n",filename, global_acum);
@@ -495,12 +362,45 @@ int ascii_data_all( struct part *parts,
     fprintf( out, "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tz\t\ttime\n" );
     
     for( i=0;i<Npart;i+=sampling ){
-      printf("%d\n",i);
 	fprintf( out, "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
 		 parts[i].id,
 		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z],
 		 parts[i].vel[X], parts[i].vel[Y], parts[i].vel[Z],
 		 parts[i].z, parts[i].t);}
+    
+    fclose( out );
+    
+    return 0;
+}
+
+
+/**************************************************************************************************
+ NAME:	     ascii_data_pos
+ FUNCTION:   This function write positions of each particle onto a ascci file
+ INPUTS:     Struct with particles, number of particles, output filename, number of data sampling
+ RETURN:     0
+**************************************************************************************************/
+int ascii_data_pos( struct part *parts,
+		    int Npart,
+		    char output[NMAX1],
+		    int sampling )
+{
+    int i;
+    FILE *out;
+    
+    //Creating output file
+    out = fopen( output, "w");
+
+    //Writing data
+    fprintf( out, "%d\n", Npart/sampling ); //Points in total
+    fprintf( out, "%d\n", Npart/sampling ); //Points in DM
+    fprintf( out, "0\n" ); //Gas
+    fprintf( out, "0.01\n" ); //Time
+    fprintf( out, "0\n" ); //Nactive
+    
+    for( i=0;i<Npart;i+=sampling ){
+	fprintf( out, "%1.5e\t%1.5e\t%1.5e\n", 
+		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z]);}
     
     fclose( out );
     

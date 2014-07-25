@@ -5,7 +5,7 @@
  	   *	<number of files per snap>
  	   *	<density of data sampling>
  	   *	<output filename> 
- 	   *	<0-gas or 1-all> 
+ 	   *	<0-all or 1-gas or 2-DM>
 */
 
 int main( int argc, char *argv[] )
@@ -26,16 +26,15 @@ int main( int argc, char *argv[] )
     type = atoi( argv[5] );
         
     //Reading data from Gadget file
-    if( type == 0 )	//Gas
-	Npart_snap = read_snap_gas( snapbase, file_snap );
-    else		//All
-	Npart_snap = read_snap_all( snapbase, file_snap );
+    Npart_snap = read_snap( snapbase, file_snap, type );
     
     //Writing data
-    if( type == 0 )	//Gas
+    if( type == 1 )	//Gas
 	ascii_data_gas( Part, Npart_snap, output, sampling );
-    else		//All
+    else		//All or DM
 	ascii_data_all( Part, Npart_snap, output, sampling );
+    
+//     ascii_data_pos( Part, Npart_snap, output, sampling );
     
     return 0;
 }
