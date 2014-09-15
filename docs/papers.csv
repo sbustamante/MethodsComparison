@@ -1,8 +1,10 @@
-#Number	 Paper	 Comments	 Stage	 Author	 Year	 Link
-1	Moving mesh cosmology: numerical techniques and global statistics	 	Reading	Vogelsberger M. et.al.	2012	http://adsabs.harvard.edu/abs/2012MNRAS.425.3024V
-2	Moving mesh cosmology: the hydrodynamics of galaxy formation	SPH vs AREPO	Pending	Sijacki D. et.al.	2012	http://adsabs.harvard.edu/abs/2012MNRAS.424.2999S
-3	Galaxy mergers on a moving mesh: a comparison with smoothed-particle hydrodynamics	SPH vs AREPO	Reading	Hayward C. et al.	2013	http://adsabs.harvard.edu/abs/2014MNRAS.442.1992H
-4	Particle hydrodynamics with tessellation techniques	VPH vs SPH	Reading	Hess S. and Springel V.	2010	http://adsabs.harvard.edu/abs/2010MNRAS.406.2289H
-5	E pur si muove: Galilean-invariant cosmological hydrodynamical simulations on a moving mesh	AREPO	Reading	Springel V.	2010	http://adsabs.harvard.edu/abs/2010MNRAS.401..791S
-6	Smoothed Particle Hydrodynamics in Astrophysics	SPH	Reading	Springel V.	2011	http://adsabs.harvard.edu/abs/2010ARA%26A..48..391S
-7	Smoothed Particle Hydrodynamics: theory and application to non-spherical stars	SPH	Pending	Gingold R. and Monaghan J.	1977	http://adsabs.harvard.edu/abs/1977MNRAS.181..375G
+#Number,	 Paper,	 Comments,	 Stage,	 Author,	 Year,	 Link	
+1,	Moving mesh cosmology: numerical techniques and global statistics,	 	Reading,	Vogelsberger M. et.al.,	2012,	http://adsabs.harvard.edu/abs/2012MNRAS.425.3024V	
+2,	Moving mesh cosmology: the hydrodynamics of galaxy formation,	SPH vs AREPO,	Pending,	Sijacki D. et.al.,	2012,	http://adsabs.harvard.edu/abs/2012MNRAS.424.2999S	
+3,	Galaxy mergers on a moving mesh: a comparison with smoothed-particle hydrodynamics,	SPH vs AREPO,	Reading	Hayward C. et al.,	2013,	http://adsabs.harvard.edu/abs/2014MNRAS.442.1992H	
+4,	Particle hydrodynamics with tessellation techniques,	VPH vs SPH,	Reading,	Hess S. and Springel V.,	2010,	http://adsabs.harvard.edu/abs/2010MNRAS.406.2289H	
+5,	E pur si muove: Galilean-invariant cosmological hydrodynamical simulations on a moving mesh,	AREPO,	Reading,	Springel V.,	2010,	http://adsabs.harvard.edu/abs/2010MNRAS.401..791S	
+6,	Smoothed Particle Hydrodynamics in Astrophysics,	SPH,	Reading,	Springel V.,	2011,	http://adsabs.harvard.edu/abs/2010ARA%26A..48..391S	
+7,	Smoothed Particle Hydrodynamics: theory and application to non-spherical stars,	SPH	,Pending	,Gingold R. and Monaghan J.,	1977,	http://adsabs.harvard.edu/abs/1977MNRAS.181..375G	
+8,	Cosmological smoothed particle hydrodynamics simulations: a hybrid multiphase model for star formation,	Information of negative indexes of Gadget files,	Pending,	Springel V. and Hernquist L.,	2003,	http://adsabs.harvard.edu/abs/2003MNRAS.339..289S	
+9,	The redshift evolution of cold dark matter halo parameters: concentration spin and shape,	Information of viral radius, 	Pending,	Munoz-Cuartas J.C. Et al.,	2011,	http://adsabs.harvard.edu/abs/2011MNRAS.411..584M
