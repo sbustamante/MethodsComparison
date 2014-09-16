@@ -60,20 +60,19 @@ More detailed information of the applicant can be found here \url{http://goo.gl/
 As we understand more deeply the physical processes involved in astrophysical 
 phenomena, it becomes necessary to compute complex interactions of a ever 
 increasing number of single components. Some prominent examples include 
-simulations of the large-scale Universe, galaxy evolution, stellar interior, 
-star formation and protoplanetary disk dynamics. A common aspect of these 
-examples is that all of them can be regarded basically as a fluid mechanic 
-problem.
+the large-scale Universe, galaxy evolution, stellar interior, star formation 
+and protoplanetary disk dynamics. A common aspect of these examples is that all 
+of them can be regarded basically as a fluid mechanic problem.
 
 \
 
 Although the development of analytical approaches has demonstrated to be a
 valuable resource for studying these processes, their increasing complexity 
 makes necessary to invoke numerical solutions as a more viable alternative. For
-this purpose, two different families of hydrodynamics solvers has been explored 
-and widely used throughout the literature. First, a family of moving-mesh-based 
-techniques (e.g. \textit{Smoothed Particle Hydrodynamics} \SPH\ 
-\citep{Monaghan92}, \textit{Voronoi Particle Hydrodynamics} \VPH\ 
+this purpose, two different families of hydrodynamics solvers has been explored
+and widely used by the astrophysical community. First, a family of 
+moving-mesh-based techniques (e.g. \textit{Smoothed Particle Hydrodynamics} 
+\SPH\ \citep{Monaghan92}, \textit{Voronoi Particle Hydrodynamics} \VPH\ 
 \citep{Hess10}), and a second family of fixed-mesh-based techniques (e.g.
 \textit{Adaptive Mesh Refinement} \texttt{AMR} \citep{Berger89}).
 
@@ -82,19 +81,49 @@ techniques (e.g. \textit{Smoothed Particle Hydrodynamics} \SPH\
 Due to the Lagrangian character of moving-mesh methods, techniques like \SPH\ 
 are easily implemented on a computer. Furthermore, as the physical system 
 evolves, the mass particles naturally move into higher density regions, 
-providing a self-adjusting spatial resolution. However, \SPH\ has been shown 
-to produce spurious suppression of fluid instabilities due to its kernel-based
-density estimator, making it unsuitable to model some of the dynamics 
-accurately. 
+providing a self-adjusting spatial resolution. Nevertheless, \SPH\ has been 
+shown to produce spurious suppression of fluid instabilities due to its 
+kernel-based density estimator, making it unsuitable to model some of the 
+dynamics accurately. On the other hand, fixed-mesh methods like \AMR\ are more 
+efficient for capturing shock dynamics. However, due to the conservative nature 
+of the hydrodynamical equations, a fixed mesh causes a lack of Galilean 
+invariance. Furthermore, the sampling of physical properties over the grid 
+introduces spurious vorticity to the fluid, making this technique poor suitable 
+for studying turbulent flows.
 
 \
 
-On the other hand, fixed-mesh methods like the \AMR\ technique are more 
-efficient for capturing shock dynamics. However, due to the conservative nature 
-of the hydrodynamical equations, the fixed mesh causes a lack of Galilean 
-invariance. Furthermore, the sampling of physical properties over the grid 
-introduces spurious vorticity to the fluid, making this technique unsuitable 
-for studying turbulent flows.
+A completely new approach to solve hydrodynamical problems was introduced by 
+\citet{Springel10} and implemented into the \AREPO\ code. It combines the 
+strengths of \AMR\ and \SPH\ but overcomes many of their weaknesses, hence it 
+can be though as a mixed technique. \AREPO\ uses a moving mesh based on a 
+Voronoi tessellation defined over a set of particles that represents the fluid. 
+The geometry of the mesh resembles very closely that of the point distribution,
+retaining the self-adaptivity inherent of \SPH\ and also keeping a grid to 
+capture shocks like \AMR\ does. These features make \AREPO\ highly accurate for
+simulating a wide range of hydrodynamical problems. Nevertheless, there is a 
+price to pay for this accuracy, \AREPO\ demands a huge computing time as 
+compared with \SPH\ and even \AMR.
+
+\
+
+A very interesting alternative was introduced by \citet{Hess10}, i.e. the 
+\textit{Voronoi Particle Hydrodynamics} \VPH\ technique. This approach consists
+of an implementation of \SPH\ with a modified density estimator based on the  
+\textit{Voronoi Tessellation Field Estimator} \VTFE. The new estimator
+has demonstrated to improve substantially the spurious suppression of fluid 
+instabilities as well as retaining the computational efficiency of the original 
+formulation.
+
+\
+
+Finally, galaxy evolution and large-scale structure formation are very rich 
+astrophysical phenomena where a plethora of hydrodynamical processes can be 
+found and studied. In this fashion, cosmological simulations are a quite 
+suitable scenario for performing detailed physical and computational 
+comparisons of all above-mentioned techniques. It is especially interesting to 
+quantify the computational efficiency of the \VPH\ technique in terms of its 
+physical accuracy as compared with the classical approaches and \AREPO.
 
 
 
