@@ -13,7 +13,7 @@
 \begin{center}
 \includegraphics[trim = 0mm 3.5cm 0mm 3.0cm, clip, keepaspectratio=true,
 width=0.7\textheight]{Presentation1.png}
-\tiny{Time evolution of a gas cloud in a supersonic wind using a VPH scheme.
+\tiny{Time evolution of a gas cloud in a supersonic wind using a \VPH\ scheme.
 Taken from \citep{Hess10}}
 \end{center}
 \tableofcontents
@@ -27,14 +27,6 @@ Taken from \citep{Hess10}}
 \begin{tabular}{L!{\VRule}R}
 \bf Name		& Sebastian Bustamante Jaramillo\\
 \bf Degree		& B.Sc. in Physics, Universidad de Antioquia (2013)\\
-\bf Position	& Adjunct Professor, Universidad de Antioquia\\
-\bf Birthday	& { 20$^{th}$ June, 1990}\\
-\bf Nationality & Colombian\\
-\bf ID			& C.C. 1128400433\\
-\bf Address 1	& Avenida 21 \# 57 AA 65, Bello - Colombia (personal)\\
-\bf Address 2	& Calle 67 \# 53 - 108, Off. 5-330, Medellin, Colombia (work)\\
-\bf Phone		& +057 (4) 4820138\\
-\bf Mobile		& +057 3108992409\\
 \bf E-mail 1	& macsebas33 \textit{at} gmail.com (personal)\\
 \bf E-mail 2	& sebastian.bustamante \textit{at} udea.edu.co (academic)\\
 \end{tabular}
@@ -65,6 +57,54 @@ More detailed information of the applicant can be found here \url{http://goo.gl/
 %==============================================================================
 \section{Introduction}
 %==============================================================================
+As we understand more deeply the physical processes involved in astrophysical 
+phenomena, it becomes necessary to compute complex interactions of a ever 
+increasing number of single components. Some prominent examples include 
+simulations of the large-scale Universe, galaxy evolution, stellar interior, 
+star formation and protoplanetary disk dynamics. A common aspect of these 
+examples is that all of them can be regarded basically as a fluid mechanic 
+problem.
+
+\
+
+Although the development of analytical approaches has demonstrated to be a
+valuable resource for studying these processes, their increasing complexity 
+makes necessary to invoke numerical solutions as a more viable alternative. For
+this purpose, two different families of hydrodynamics solvers has been explored 
+and widely used throughout the literature. First, a family of moving-mesh-based 
+techniques (e.g. \textit{Smoothed Particle Hydrodynamics} \SPH\ 
+\citep{Monaghan92}, \textit{Voronoi Particle Hydrodynamics} \VPH\ 
+\citep{Hess10}), and a second family of fixed-mesh-based techniques (e.g.
+\textit{Adaptive Mesh Refinement} \texttt{AMR} \citep{Berger89}).
+
+\
+
+Due to the Lagrangian character of moving-mesh methods, techniques like \SPH\ 
+are easily implemented on a computer. Furthermore, as the physical system 
+evolves, the mass particles naturally move into higher density regions, 
+providing a self-adjusting spatial resolution. However, \SPH\ has been shown 
+to produce spurious suppression of fluid instabilities due to its kernel-based
+density estimator, making it unsuitable to model some of the dynamics 
+accurately. 
+
+\
+
+On the other hand, fixed-mesh methods like the \AMR\ technique are more 
+efficient for capturing shock dynamics. However, due to the conservative nature 
+of the hydrodynamical equations, the fixed mesh causes a lack of Galilean 
+invariance. Furthermore, the sampling of physical properties over the grid 
+introduces spurious vorticity to the fluid, making this technique unsuitable 
+for studying turbulent flows.
+
+
+
+%==============================================================================
+\section{Objectives}
+%==============================================================================
+\subsection*{General Objective}
+\begin{itemize}
+	\item Evaluating the performance of the \VPH\ method
+\end{itemize}
 
 
 %==============================================================================
@@ -73,17 +113,9 @@ More detailed information of the applicant can be found here \url{http://goo.gl/
 
 
 %==============================================================================
-\section{Objectives}
-%==============================================================================
-
-
-%==============================================================================
 \section{Methodology}
 %==============================================================================
-\subsection*{General Objective}
-\begin{itemize}
-	\item Evaluating the performance of the \VPH method
-\end{itemize}
+
 
 %==============================================================================
 \section{Expected Results}
@@ -132,6 +164,7 @@ More detailed information of the applicant can be found here \url{http://goo.gl/
 
 
 %==============================================================================
+\newpage
 \bibliographystyle{latex/mn2e}
 \renewcommand{\bibname}{8\ \ \ \ Bibliography}
 \small
