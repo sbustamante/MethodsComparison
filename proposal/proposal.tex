@@ -123,7 +123,7 @@ found and studied. In this fashion, cosmological simulations are a quite
 suitable scenario for performing detailed physical and computational 
 comparisons of all above-mentioned techniques. It is especially interesting to 
 quantify the computational performance of the \VPH\ technique in terms of its 
-physical accuracy as compared with the classical approaches and \AREPO.
+physical accuracy as compared with the classic approaches and \AREPO.
 
 
 
@@ -165,6 +165,33 @@ where were formulated each of the discussed methods should be done. Also a
 review of previous comparison projects.}
 \end{itemize}
 
+
+Before carrying out our enterprise in quantifying the performance of \VPH\ over
+cosmological setups, it is necessary to understand deeply the foundations of 
+the classic approaches. At this point, a detailed bibliographic review of the 
+original papers (for \SPH, \AMR, \VPH\ and \AREPO) should be done. Although no 
+previous works have been done in comparing thoroughly the performance of \VPH\
+with other approaches over cosmological setups, there are a plenty of comparison
+projects for the classic approaches and even \AREPO\ over galaxy simulations and 
+commonly used benchmark problems. This literature has to be reviewed as well.
+
+\
+
+\begin{itemize}
+\item[\checkmark] \textit{Second, a design of the numerical experiments should 
+be done at this point. This includes making cosmological simulations using 
+different techniques and if necessary, constructing and simulating specific 
+benchmark problems like fluid instabilities.}
+\end{itemize}
+
+
+As this project will be entirely based on numerical results, computing a set of
+cosmological simulations as well as some benchmark problems is one of the key 
+steps. For this purpose, we will use some packages like \texttt{GADGET} 
+\citep{Springel05} for \SPH\ simulations, \texttt{RAMSES} \citet{Teyssier02} 
+for \AMR\ and a modified version of \texttt{GADGET} for \VPH.
+
+
 %==============================================================================
 \section{Expected Results}
 %==============================================================================
@@ -173,6 +200,8 @@ obtained the following results:
 \begin{itemize}
 \item A toolbox of codes to study the performance of hydro-solvers over 
 cosmological setups and over standard benchmark problems in fluid mechanics.
+\item A set of cosmological simulations computed by using each of the studied
+techniques.
 \item A M.Sc. thesis.
 \item Submitting a first-author paper to an international journal.
 \item Participating with a poster or an oral presentation in an international
