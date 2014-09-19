@@ -68,9 +68,9 @@ of them can be regarded basically as a fluid mechanic problem.
 
 Although the development of analytical approaches has demonstrated to be a
 valuable resource for studying these processes, their increasing complexity 
-makes necessary to invoke numerical solutions as a more viable alternative. For
-this purpose, two different families of hydrodynamics solvers has been explored
-and widely used by the astrophysical community. First, a family of 
+makes necessary to invoke numerical solutions as a more feasible alternative. 
+For this purpose, two different families of hydrodynamics solvers has been 
+explored and widely used by the astrophysical community. First, a family of 
 moving-mesh-based techniques (e.g. \textit{Smoothed Particle Hydrodynamics} 
 \SPH\ \citep{Monaghan92}, \textit{Voronoi Particle Hydrodynamics} \VPH\ 
 \citep{Hess10}), and a second family of fixed-mesh-based techniques (e.g.
@@ -118,12 +118,12 @@ formulation.
 \
 
 Finally, galaxy evolution and large-scale structure formation are very rich 
-astrophysical phenomena where a plethora of hydrodynamical processes can be 
-found and studied. In this fashion, cosmological simulations are a quite 
-suitable scenario for performing detailed physical and computational 
-comparisons of all above-mentioned techniques. It is especially interesting to 
-quantify the computational performance of the \VPH\ technique in terms of its 
-physical accuracy as compared with the classic approaches and \AREPO.
+astrophysical scenarios where a plethora of hydrodynamical processes can be 
+found and studied. In this fashion, cosmological simulations are quite suitable 
+for performing detailed physical and computational comparisons of all 
+above-mentioned techniques. It is especially interesting to quantify the 
+computational performance of the \VPH\ technique in terms of its physical 
+accuracy as compared with the classic approaches and \AREPO.
 
 
 
@@ -161,8 +161,8 @@ steps:
 
 \begin{itemize}
 \item[\checkmark] \textit{First, a bibliographic review of the original papers 
-where were formulated each of the discussed methods will be done. Also a 
-review of previous comparison projects.}
+of the discussed methods will be done. Also a review of previous comparison 
+projects.}
 \end{itemize}
 
 
@@ -253,29 +253,47 @@ event.
 %==============================================================================
 \section{Scientific Impact}
 %==============================================================================
-The matter content of the Universe has been probed to be dominated almost 
-entirely by non-interacting dark matter \citet{Planck13XVI}. Accordingly, most
-of the related numerical work in cosmology and galaxy formation has been carried
-out based on dark matter only simulations. Nevertheless, on smaller (galactic)
-scales, the effects of baryons become significant. For example, recent 
-simulations show that filamentary gas accretion in early stages of galaxy 
-evolution is a key physical process; there is evidence that it plays a central 
-role in the formation of discs \citet{Dubois14}, determining the alignment of 
-galaxies with respect to the web \citet{Hahn10} and fuelling high star formation 
-rates \citet{Dekel09}.
+The matter content of the Universe has been probed to be dominated by the dark 
+matter component \citet{Planck13XVI}. Accordingly, most of the related numerical 
+work in cosmology and galaxy formation has been carried out based on dark matter 
+only simulations. Nevertheless, on smaller (galactic) scales, the effects of 
+baryons become significant. For example, recent hydrodynamical simulations show 
+that filamentary gas accretion in early stages of galaxy evolution is a key 
+physical process; there is evidence that it plays a central role in the formation 
+of discs \citet{Dubois14}, determining the alignment of galaxies with respect to 
+the web \citet{Hahn10} and fuelling high star formation rates \citet{Dekel09}.
 
+\
 
+These results show the importance of modelling baryons by incorporating gas 
+dynamics into cosmological simulations. For this purpose, \AMR\ and \SPH\ have
+been widely used by the astrophysical community. However, due to the singular 
+situations where each of those techniques fails, general purpose hydrodynamical
+simulations cannot be reached by means of them.
 
+\
+
+The recently developed approach \AREPO\ \citet{Springel10} has demonstrated to 
+be highly efficient dealing with some of the most critical weaknesses of \AMR\ 
+and \SPH, what makes it a very appealing alternative. However, its demanding 
+computing time also makes it infeasible when computational resources are rather 
+limited. In this direction, our endeavour in quantifying the computational 
+performance and the improved physical accuracy of \VPH\ would contribute with 
+valuable insight of this technique as a more feasible option when limited 
+computational resources are available.
+
+\newpage
 %==============================================================================
 \section{Schedule}
 %==============================================================================
-
+Next it is shown a table with the proposed activities scheduled for each term
+of the project.
 
 \begin{table}[h]
 \begin{flushleft}
 \begin{center}
   \begin{tabular}{l  c c c c } \hline\hline
-	\centering\textbf{Goals} & \textbf{Semester I} & \textbf{Semester II} & \textbf{Semester III} & \textbf{Semester IV} \\ \hline\hline
+	\centering\textbf{Goals} & \textbf{Term I} & \textbf{Term II} & \textbf{Term III} & \textbf{Term IV} \\ \hline\hline
 	 Bibliographic review & X & & & \\
 	 Numerical experiments & X & X & & \\
 	 Analysis of results &  & X & X & \\
@@ -283,13 +301,13 @@ rates \citet{Dekel09}.
 	 Dissertation &  &  &  & X \\
 	\hline\hline
   \end{tabular}  
+  \caption{ Terms range from 2014-02 for term I, up to 2016-01 for term IV.}
 \end{center}
 \end{flushleft}
 \end{table}
 
 
 %==============================================================================
-\newpage
 \bibliographystyle{latex/mn2e}
 \renewcommand{\bibname}{8\ \ \ \ Bibliography}
 \small
