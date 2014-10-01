@@ -126,7 +126,6 @@ computational performance of the \VPH\ technique in terms of its physical
 accuracy as compared with the classic approaches and \AREPO.
 
 
-
 %==============================================================================
 \section{Objectives}
 %==============================================================================
@@ -150,7 +149,160 @@ describing turbulent flows.
 %==============================================================================
 \section{Theoretical Framework}
 %==============================================================================
+\subsection*{The Cosmological Setup}
+At very large scales ($\sim h^{-1}$Gpc) the current Universe exhibits a quite
+homogeneous matter distribution, what is, in fact, a print of its very first 
+stage, that was almost perfectly homogeneous at all scales. Under this 
+considerations, at zero-order the whole Universe can be roughly described 
+through an uniform fluid model, leading, through the Einstein's field equations,
+to a set of isotropic and homogeneous model better known as Friedmann's 
+solutions \citep{longair2008}.
 
+\eq{Friedmann}
+{ H^2(t) = H_0^2\corc{ (1-\Omega_0)\frac{1}{a^2} + \Omega_m\frac{1}{a^3} + 
+\Omega_r\frac{1}{a^4} + \Omega_\Lambda } }
+where $a(t)$ is the scale factor that quantifies the relative size of the 
+Universe as compared with the current epoch, $H(t)$ is defined as $H = a/
+\dot a$, $H_0$ is the current Hubble constant and the set $\Omega_i$ are the
+abundance parameters of each specie in the Universe, namely $\Omega_0 = \sum 
+\Omega_i$, $\Omega_m$ is the current abundance of matter (dark+baryon), 
+$\Omega_r$ the abundance of radiation and relativistic matter and finally 
+$\Omega_\Lambda$ is associated to the cosmological constant. This 
+parametrization is very convenient as all of these parameters can be estimated
+observationally \citep{Planck13XVI}.
+
+%.........................................................................
+%FIGURE 1: Friedmann's solutions
+\begin{figure}[h]
+\centering
+
+  \includegraphics[trim = 12mm 4mm 17mm 8mm, clip, keepaspectratio=true,
+  width=0.4\textheight]{./figures/Friedmann_Solution.pdf}
+  
+  \caption{\small Different solutions to the Friedmann's equation. The WMAP7
+  solution is consistent with our Universe, where the current epoch
+  is vacuum dominated, corresponding with an accelerated expansion.}
+
+  \label{fig:Friedmann}
+
+\end{figure}
+%.........................................................................
+
+
+Nevertheless, an uniform fluid model cannot account for the bound structures 
+observed at smaller scales like galaxies and clusters. It is hence necessary 
+to modify the Friedmann's solutions in order to include small perturbations 
+that enable the evolution of such a bound structures at the current time. To do
+so, the Einstein's equation is linearized as follows \citep{padmanabhan1995}:
+
+
+\eq{LinearEinstein}
+{ \mathcal{L}(R_{\mu \nu}, \delta R_{\mu \nu}) = \frac{8\pi G}{c^2}
+( T_{\mu \nu} + \delta T_{\mu \nu} ) }
+
+
+This approach can be demonstrated to be equivalent to introducing basic 
+Newtonian fluid equations for the matter component.
+
+%.........................................................................	
+%Fluid Equations
+\begin{eqnarray}
+%.........................................................................	
+\label{eq:ContinuityEquationC}
+\matrix{\mbox{\footnotesize{Continuity}} \cr \mbox{\footnotesize{equation}}} & &
+\der{\delta}{t} = - \frac{1}{a}\nabla_r \cdot \corc{ (1+\delta)\bds v }\\
+\nonumber{}
+\\
+%.........................................................................	
+\label{eq:EulerEquationC}
+\matrix{\mbox{\footnotesize{Euler's}} \cr \mbox{\footnotesize{equation}}} & &
+\der{\bds v}{t} + \frac{\dot a}{a}\bds v + 
+\frac{1}{a}\pr{ \bds v\cdot \nabla_r }\bds v = 
+-\frac{\nabla_r P}{a \bar \rho(1+\delta)} - 
+\frac{1}{a}\nabla_r \Phi \\
+\nonumber{}
+\\
+%.........................................................................	
+\label{eq:PoissonEquationC}
+\matrix{\mbox{\footnotesize{Poisson's}} \cr \mbox{\footnotesize{equation}}} & &
+\nabla^2_r \Phi = 4\pi G\bar \rho a^2 \delta
+\end{eqnarray}
+%.........................................................................	
+where $\rho = \bar\rho + \delta \rho = \bar \rho (1+\delta)$ is the matter 
+density, $\bds v$ is the peculiar velocity, $\Phi = \phi + \ddot a a r^2/2$ 
+the peculiar gravitational potential, $P$ the fluid pressure and all gradients 
+are evaluated in comoving coordinates.
+
+\
+
+Assuming an equation of state for an inviscid gas and decomposing the density 
+field into Fourier modes (for a flat universe), we obtain:
+
+
+\eq{ContinuityEquationCMode}
+{ \dtot{^2 \delta_{\bds k}}{t^2} + 2\frac{\dot a}{a}\dtot{\delta_{\bds k}}{t} =
+\corc{ 4\pi G \bar \rho - \frac{c_s^2}{a^2}k^2 }\delta_{\bds k} }
+where $\delta_{\bds k}$ are the modes of the density and $c_s$ the velocity of 
+the sound in the medium. For the linear regime, where perturbations are still
+valid, each mode evolves independently. It is hence possible to assume a general
+solution of the form $\delta_{\bds k}(t) = \delta_{\bds k}(0) D(t)$, where $t=0$ 
+is referred to as some suitable time after the epoch of recombination and $D(t)$
+is the linear growth function, given by:
+
+\eq{LinearGrowth}
+{ D(a) = \frac{5}{2}\Omega_m\corc{ \Omega_m^{4/7} - \Omega_\Lambda + 
+\pr{ 1+\frac{\Omega_m}{2} }\pr{ 1+\frac{\Omega_\Lambda}{70} } }^{-1} }
+
+At this point, it is possible to follow completely the evolution of the Universe
+in the linear regime. However, when the modes of the density field become large
+enough $\delta\gg 1$, the assumption of independence is not longer adequate, it 
+is hence necessary to evaluate numerically the evolution in the non-linear 
+regime.
+
+%.........................................................................
+%FIGURE 2: Zel'dovich approximation
+\begin{figure}[h]
+\centering
+
+  \includegraphics[trim = 0mm 0mm 0mm 2mm, clip, keepaspectratio=true,
+  width=0.4\textheight]{./figures/Zeldovich_Approximation.png}
+  
+  \caption{\small Comparison of the evolution of a density field for a 
+  N-body simulation (left) and for the Zel'dovich approximations (right).
+  Taken from \cite{longair2008}.}
+
+  \label{fig:Friedmann}
+
+\end{figure}
+%.........................................................................
+
+In order to provide a set of initial conditions for numerical runs, it can be 
+used the Zel'dovich approximation \citep{Zeldovich70}. This approximation allows
+to follow the evolution of primordial perturbations in the quasi-linear regime 
+($\delta \sim 1$), what makes it very suitable to tie analytical solutions in 
+the linear regime with numerical solutions in the non-linear regime. Using the
+Lagrangian frame and taking certain portion of the fluid, its trajectory can 
+be described as follows:
+
+\eq{Zeldovich}
+{ \bds r(t,\bds q) = a(t)\corc{ \bds q + \bds{\Psi}(\bds q, t) } }
+
+where $\bds q$ is the comoving Lagrangian coordinate when fluid is not 
+perturbed and $\bds{\Psi}(\bds q, t)$ is the displacement function that 
+accounts for clustering. The displacement function can be approximated as 
+$\bds{\Psi}(\bds q, t) = D(t)\bds{\Psi}(\bds q)$, where $D(t)$ is the linear 
+growth function (Eq. \ref{eq:LinearGrowth}) and $\bds{\Psi}(\bds q)$ is given 
+by:
+
+\eq{Displacement}
+{ \bds{\Psi}(\bds q) = \int \frac{d^3 k}{(2\pi)^3}e^{i \bds k \cdot \bds q}
+\frac{i\bds k}{k^2}\delta_{\bds k}(0) }
+
+In this same fashion, the perturbed velocity field can be constructed by means
+of the Zel'dovich approximation. Then, discretizing the fluid, it is obtained a 
+set of positions and velocities corresponding with the input initial conditions 
+for some numerical scheme for evolving the non-linear regime, like \SPH, \VPH, 
+\AMR.
 
 %==============================================================================
 \section{Methodology}
@@ -238,7 +390,7 @@ and conclusions.
 %==============================================================================
 Previous activities and projects related with Numerical Cosmology have been 
 successfully carried out within the FACom group, many of these leaded by Prof. 
-Juan Carlos Muñoz-Cuartas. This demonstrated the broad research expertise of the 
+Juan Carlos Munoz-Cuartas. This demonstrates the broad research expertise of the 
 supervisor in the topic and the availability of computational resources (computing
 time, software) required to perform this project satisfactorily.
 
@@ -267,24 +419,6 @@ find some codes and further information of the present stage of the project in
 this repository \url{https://github.com/sbustamante/MethodsComparison}}, 
 including basic miscellaneous functions for handling data, plotting point 
 distributions and constructing phase diagrams.
-
-
-
-%==============================================================================
-\section{Expected Results}
-%==============================================================================
-At the end of the stipulated development time for this project, we hope to have
-obtained the following results:
-\begin{itemize}
-\item A toolbox of codes to study the performance of hydro-solvers over 
-cosmological setups and over standard benchmark problems in fluid mechanics.
-\item A set of cosmological simulations computed by using each of the studied
-techniques.
-\item A M.Sc. thesis.
-\item Submitting a first-author paper to an international journal.
-\item Participating with a poster or an oral presentation in an international
-event.
-\end{itemize}
 
 
 %==============================================================================
@@ -319,7 +453,24 @@ performance and the improved physical accuracy of \VPH\ would contribute with
 valuable insight of this technique as a more feasible option when limited 
 computational resources are available.
 
-\newpage
+
+%==============================================================================
+\section{Expected Results}
+%==============================================================================
+At the end of the stipulated development time for this project, we hope to have
+obtained the following results:
+\begin{itemize}
+\item A toolbox of codes to study the performance of hydro-solvers over 
+cosmological setups and over standard benchmark problems in fluid mechanics.
+\item A set of cosmological simulations computed by using each of the studied
+techniques.
+\item A M.Sc. thesis.
+\item Submitting a first-author paper to an international journal.
+\item Participating with a poster or an oral presentation in an international
+event.
+\end{itemize}
+
+
 %==============================================================================
 \section{Schedule}
 %==============================================================================
@@ -352,7 +503,5 @@ of the project.
 \small
 \bibliography{references.bib}
 %==============================================================================
-
-
 
 \end{document}
