@@ -72,7 +72,7 @@ makes necessary to invoke numerical solutions as a more feasible alternative.
 For this purpose, two different families of hydrodynamics solvers has been 
 explored and widely used by the astrophysical community. First, a family of 
 moving-mesh-based techniques (e.g. \textit{Smoothed Particle Hydrodynamics} 
-\SPH\ \citep{Monaghan92}, \textit{Voronoi Particle Hydrodynamics} \VPH\ 
+\SPH\ \citep{Lucy77,Gingold77}, \textit{Voronoi Particle Hydrodynamics} \VPH\ 
 \citep{Hess10}), and a second family of fixed-mesh-based techniques (e.g.
 \textit{Adaptive Mesh Refinement} \texttt{AMR} \citep{Berger89}).
 
@@ -300,9 +300,110 @@ by:
 
 In this same fashion, the perturbed velocity field can be constructed by means
 of the Zel'dovich approximation. Then, discretizing the fluid, it is obtained a 
-set of positions and velocities corresponding with the input initial conditions 
-for some numerical scheme for evolving the non-linear regime, like \SPH, \VPH, 
-\AMR.
+set of positions and velocities $\{\rho_i,\bds r_i, \bds v_i\}$ corresponding 
+with the input initial conditions for some numerical scheme for evolving the 
+non-linear regime, like \SPH, \VPH, \AMR.
+
+
+\subsection*{Smoothed Particle Hydrodynamics (SPH)}
+As was previously discussed, the matter component of the Universe can be modelled
+as an inviscid and collisionless gas that follows the standard fluid equations
+\ref{eq:ContinuityEquationC}, \ref{eq:EulerEquationC}, \ref{eq:PoissonEquationC}.
+The objective of any hydrodynamic scheme is then solving these set of equations
+in a suitable way. One of the classic schemes widely used by the astrophysical 
+community for this task is the Smoothed Particle Hydrodynamics \SPH\ as 
+introduced by \citet{Lucy77} and \citet{Gingold77}.
+
+\subsubsection*{Kernel Interpolants}
+
+The core of \SPH\ is the kernel interpolant formalism, where a continuous and
+smoothed field can be recovered from a discrete set of sampling particles. For
+any physical field $F(\bds r)$ it may be defined a smoothed version $F_s(\bds r)$
+as
+
+\eq{SmoothedF}
+{ F_s(\bds r) = \int_V \bds F(\bds r')W(\bds r - \bds r'; h) d\bds r' }
+where the integral extends over the volume domain and $W(\bds r;h)$ is the 
+kernel interpolant, with $h$ being the smoothing length, which gives the volume
+associated to the kernel domain. 
+
+\
+
+Several different expressions for the kernel can be used for obtaining the 
+smoothed versions of the fields, where the only conditions to satisfy are 
+normalization $\int W(\bds r; h)d\bds r= 1$ and convergence to the Dirac delta 
+when $h\rightarrow 0$. Nevertheless, finite-range kernels like the cubic spline 
+kernel are preferred for their easy computational implementation.
+
+\eq{kernel}
+{ W(r; h) \equiv W\pr{ \frac{r}{2h} } = W(q) = \frac{8}{\pi}
+\left\{ \matrix{ 1-6q^2 + 6q^3, & 0 \leq q \leq 1/2, \cr
+2(1-q)^3, & 1/2 < q \leq 1,\cr
+0, & q>1 } \right. }
+
+If we fix the masses of the sampling particles to be $\{m_i\}_i$, the volume
+element of each may be approximated as $\Delta \bds r_i = m_i/\rho_i$. The 
+variation of the volume hence relies on the variation of the density. The 
+integral \ref{eq:SmoothedF} can be then approximated as
+
+\eq{DiscreteF}
+{ F'_i \equiv F_s(\bds r_i) \approx \sum_j \frac{m_j}{\rho_j}F_j 
+W(\bds r_i - \bds r_j; h_i) }
+here we use the notation $F'_i = F_s(\bds r_i)$ for the smoothed fields and
+$F_i = F(\bds r_i)$ for the originals. Although smoothed fields are defined 
+for any position, we are just interested in the positions of the sampling 
+particles $\{r_i\}$. Note that the summation runs over all particles, however, 
+due to the finite-range kernel adopted, it is reduced only to the neighbours 
+inside a sphere of radius $2h$. Hereafter, the smoothing lengths will be taken 
+as adaptive for each particle, what is necessary in order to keep a good 
+precision for high density contrasts occurring in some simulations.
+
+\
+
+One of the main appealing of the kernel interpolant formalism of \SPH\ is the
+handling of differential operators, where the conditions of continuity and 
+differentiability relies on the kernel rather than the field itself. This is 
+advantageous when dealing with sparse distributions or very rugged fields. So
+we obtain:
+
+\eq{DiffField}
+{ \mathcal{D}_i[F_s(\bds r_i)] = \sum_j\frac{m_j}{\rho_j}F_j 
+\mathcal{D}_i[W(\bds r_i - \bds r_j; h_i)] }
+where $\mathcal{D}_i$ is any differential operator evaluated in $\bds r_i$. Note
+that this expression includes the possibility of $h_i$ as a function of the 
+coordinates, what is the more general case. A very useful expression is the 
+divergence of the velocity field, yielding
+
+\eq{DivV}
+{ (\nabla \cdot \bds v)_i = \frac{1}{\rho_i}\sum_j m_j (\bds v_j - \bds v_i)
+\cdot \nabla_i W(\bds r_i - \bds r_j; h_i) }
+where vectorial identities have been used in order to symmetrize the expression.
+
+\subsubsection*{Equation of Motions}
+
+Once discussed the kernel interpolant formalism, we proceed to describe how to
+get the equations of motions to be solved computationally. The original approach
+consists in dealing directly with differential operators of the fluid equations 
+\ref{eq:ContinuityEquationC} \ref{eq:EulerEquationC} \ref{eq:PoissonEquationC}
+according to the equation \ref{eq:DiffField} \citep{Lucy77,Gingold77}. Instead,
+we will take the approach first proposed by \citet{Gingold82} and further 
+developed by \citet{Springel11}. This consists of a variational derivation of
+the equations of motions by first discretizing the Lagrangian of the system. 
+The main advantage of this derivation is that it retains the conservation laws
+associated to the Hamiltonian dynamics in a natural fashion.
+
+\
+
+As demonstrated by \citet{Eckart60}, the hydrodynamic equations can be derived
+from the Lagrangian
+
+\eq{LagrangianFluid}
+{ \mathcal{L} = \int \rho \pr{ \frac{v^2}{2} - u }dV }
+where $u$ carries with all the interactions of the system. Using the kernel 
+interpolant formalism, we can rewrite this expression as
+
+\eq{LagrangianDiscrete}
+{ \mathcal{L} = \sum_i \pr{ \frac{1}{2}m_i v_i^2 - m_i u_i } }
 
 %==============================================================================
 \section{Methodology}
@@ -341,7 +442,7 @@ benchmark problems.}
 As this project will be entirely based on numerical results, computing a set of
 cosmological simulations as well as some benchmark problems is one of the key 
 steps. For this purpose, we will use some packages like \texttt{GADGET} 
-\citep{Springel05} for \SPH\ simulations, \texttt{RAMSES} \citet{Teyssier02} 
+\citet{Springel05} for \SPH\ simulations, \texttt{RAMSES} \citet{Teyssier02} 
 for \AMR\ and a modified version of \texttt{GADGET} for \VPH. Other standard 
 benchmark problems will be also simulated, e.g. the sod shock tube, 
 Kelvin-Helmholtz instabilities, a gas cloud in a supersonic wind.
@@ -425,14 +526,14 @@ distributions and constructing phase diagrams.
 \section{Scientific Impact}
 %==============================================================================
 The matter content of the Universe has been probed to be dominated by the dark 
-matter component \citet{Planck13XVI}. Accordingly, most of the related numerical 
+matter component \citep{Planck13XVI}. Accordingly, most of the related numerical 
 work in cosmology and galaxy formation has been carried out based on dark matter 
 only simulations. Nevertheless, on smaller (galactic) scales, the effects of 
 baryons become significant. For example, recent hydrodynamical simulations show 
 that filamentary gas accretion in early stages of galaxy evolution is a key 
 physical process; there is evidence that it plays a central role in the formation 
-of discs \citet{Dubois14}, determining the alignment of galaxies with respect to 
-the web \citet{Hahn10} and fuelling high star formation rates \citet{Dekel09}.
+of discs \citep{Dubois14}, determining the alignment of galaxies with respect to 
+the web \citep{Hahn10} and fuelling high star formation rates \citep{Dekel09}.
 
 \
 
