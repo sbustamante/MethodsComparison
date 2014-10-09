@@ -405,6 +405,114 @@ interpolant formalism, we can rewrite this expression as
 \eq{LagrangianDiscrete}
 { \mathcal{L} = \sum_i \pr{ \frac{1}{2}m_i v_i^2 - m_i u_i } }
 
+For an inviscid gas, the equation of state is given by
+
+\eq{EOSgas}
+{ u_i(\rho_i) = A_i\frac{\rho_i^{\gamma-1}}{\gamma-1} = 
+\frac{P_i}{\rho_i}\frac{1}{\gamma-1} }
+where $\gamma$ is the adiabatic index, $A_i$ the specific entropy and $P_i$ the
+pressure as evaluated in the $i$th particle. Introducing this expression into
+the Lagrangian \ref{eq:LagrangianDiscrete}, considering the implicit of the
+smoothing length with the coordinates and applying the Euler-Lagrange equations,
+it is obtained the equations of motions:
+
+\eq{EoMIdeal}
+{ \frac{d\bds v_i}{dt}= -\sum_{j=1}^N m_j \corc{ f_i\frac{P_i}{\rho_i^2}\nabla_i
+W_{ij}(h_i)+f_j\frac{P_j}{\rho_j^2}\nabla_i W_{ij}(h_j)} }
+where the coefficients $f_i$ are defined as:
+\[ f_i = \corc{ 1+\frac{h_i}{3\rho_i}\frac{\partial \rho_i}{\partial h_i} }^{-1} \]
+
+The estimation of the smoothing length of each particle is reached through the
+implicit differentiation of the expression $\rho_i h_i^3 = const$, what 
+guarantees a mass conservation inside the volume of the kernel.
+
+\
+
+Although this equation of motion follows the evolution of an inviscid gas, what
+is a very approximate description of the matter in a cosmological setup, there
+are some problematic situations where the approximation is not longer suitable.
+Namely shock dynamics, where the strict entropy conservation would generate
+undesirable oscillations. It is hence necessary to introduce a new term that 
+accounts for entropy dissipation in shocks but keeping the inviscid dynamics of
+the gas elsewhere. This new term, so-called artificial viscosity, is introduced 
+in the form or a extra term in the equation of motion as
+
+\eq{ViscosityTerm}
+{ \left. \frac{d \bds v_i}{dt}\right|_{\mbox{\footnotesize visc}} =
+- \sum_{j=1}^N m_j \Pi_{ij}\nabla_i \overline{W}_{ij} }
+where $\Pi_{ij}$ is the viscous tensor and $\overline{W}_{ij} = [W_{ij}(h_i)+
+W_{ij}(h_j)]/2$. Throughout the literature may be found several different 
+parametrizations of the viscous tensor, however the standard parametrization
+proposed by \citet{Monaghan83} has demonstrated to be very adequate.
+
+\eq{ViscousTensor}
+{ \Pi_{ij} = \left\{ \matrix{ \corc{-\alpha c_{ij}\mu_{ij} + \beta \mu_{ij}^2}/\rho_{ij} & 
+\mbox{if} \bds v_{ij}\cdot \bds r_{ij} <0 \cr 0 & \mbox{otherwise}}\right. }
+with $\mu_{ij}$ defined as
+
+\[ \mu_{ij} = \frac{h_{ij}\bds v_{ij}\cdot \bds r_{ij}}{|\bds r_{ij}|^2 + 
+\epsilon h_{ij}^2} \]
+where $h_{ij}$, $\rho_{ij}$ and $c_{ij}$ are the arithmetic means of the smoothing
+length, the density and the sound speed of the $i$th and the $j$th particles 
+respectively. The softening parameter $\epsilon$ is introduced in order to avoid
+divergence when two particles come very close to each other. The parameters 
+$\alpha$ and $\beta$ quantify the strength of the viscosity term when activated.
+Usually they are chosen to be $\alpha \approx 0.5-1.0 $ and $\beta=2\alpha$.
+
+\
+
+Note that this viscous term is only activated when two particles come rapidly 
+close to each other, what is caused in most cases by a shock. The entropy 
+generated in this way is always positive definite, accounting for the required
+dissipation in shocks.
+
+\
+
+\
+
+As we are interested in astrophysical applications, it is clear the necessity 
+of coupling self-gravity to the equations of motions derived for \SPH. Instead 
+of taking the previous approach for the viscous term, we shall couple the
+self-gravity by first introducing an associated Lagrangian term that will
+ensure the energy conservation when gravity is included.
+
+\eq{LagrangianG}
+{ \mathcal{L}_g = -\frac{G}{2}\sum_{i\neq j}m_im_j \phi( r_{ij}, \epsilon_j ) }
+where the gravitational potential $\Phi(\bds r)$ has been defined as 
+$\Phi(\bds r) = G \sum_i m_i \phi(\bds r - \bds r_i, \epsilon_i)$, and $\epsilon_i$
+is a softening parameter introduced to prevent singularities. Applying the 
+Euler-Lagrange equations, we obtain the next equation of motion for the 
+gravitation:
+
+
+\eq{GravityTerm}
+{ \left.\frac{d \bds v_i}{dt}\right|_{\mbox{\footnotesize{grav}}} = 
+-\sum_j Gm_j \frac{\bds r_{ij}}{r_{ij}}\frac{[\dot\phi(\bds r_{ij},\epsilon_i)+
+\dot\phi(\bds r_{ij},\epsilon_j)]}{2} - \frac{1}{2}\sum_{j\neq k}G\frac{m_jm_k}{m_i}
+\frac{\partial \phi(r_{jk}, \epsilon_j)}{\partial \epsilon}\frac{\partial \epsilon_j}
+{\partial \bds r_i} }
+
+
+In this equation we have enabled an adaptive softening length depending on each 
+particle position, this is necessary in order to gain a better numerical 
+convergence. One way of estimating this parameter is to related it directly with
+the smoothing length of the kernel, i.e. $\epsilon_i = \epsilon_i(h_i)$. It is 
+also noteworthy that these summations run all over the sampling particles as the 
+kernel is not involved, so summations are not restricted only to nearby neighbours. 
+This requires the implementation of sophisticated gravity solvers in order to 
+avoid the prohibitive computing time scaling as $\mathcal{O}(N^2)$. Several 
+gravity solver may be found in the literature, however the \texttt{TreeCode} 
+algorithm by \citet{barnes1986} scaling as $\mathcal{O}(N\log N)$ has been widely 
+used for this purpose.
+
+\
+
+Finally, the evolution of the fluid is reached by solving numerically the 
+differential equations leaded by the inviscid, the viscous and the gravitational 
+terms. In order to do so, some numerical integration scheme has to be adopted,
+namely a symplectic integrator or even a time integrator scheme like Runge-Kutta.
+
+
 %==============================================================================
 \section{Methodology}
 %==============================================================================
