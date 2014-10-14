@@ -51,6 +51,28 @@ More detailed information of the applicant can be found here \url{http://goo.gl/
 %==============================================================================
 \section{Abstract}
 %==============================================================================
+
+The complex processes involved in some astrophysical scenarios like galaxy 
+formation, makes necessary the use of numerical approaches for a deeper 
+understanding. We are especially concerned here with hydrodynamical schemes for
+solving the dynamics of a gas for galaxy formation in a cosmological setup.
+Two families of hydro-solvers have been widely used in astrophysics, namely a
+family of Lagrangian methods, where the fluid evolution is followed by means of
+a set of sampling particles, and a second family of mesh-based methods in 
+which the evolution is performed over a fixed grid. Although these methods 
+describe well several situations, they also exhibit some weaknesses that make 
+them poor suitable for solving full hydrodynamical cosmological simulations.
+Recently, a new hydro-solver was implemented into the \AREPO\ code, solving many 
+of the weaknesses of the classic schemes and exploiting their strengths. Despite
+of the high accuracy achieved, the price to pay for this is a prohibitive 
+computing time when limited computational resources are available. We shall 
+explore a modification of the \textit{Smoothed Particle Hydrodynamic} \SPH\ scheme
+based on Voronoi tessellations for field estimation, i.e. the \textit{Voronoi 
+Particle Hydrodynamic} \VPH. This new approach improves greatly the accuracy of 
+classic Lagrangian methods, but keeping a reasonable computing time. We shall 
+compare here the physical accuracy and the computational efficiency of \VPH\ 
+with classical schemes and \AREPO.
+
 \newpage
 
 
