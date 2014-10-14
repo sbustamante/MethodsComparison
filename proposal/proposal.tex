@@ -271,7 +271,7 @@ regime.
   N-body simulation (left) and for the Zel'dovich approximations (right).
   Taken from \cite{longair2008}.}
 
-  \label{fig:Friedmann}
+  \label{fig:Zeldovich}
 
 \end{figure}
 %.........................................................................
@@ -468,8 +468,6 @@ dissipation in shocks.
 
 \
 
-\
-
 As we are interested in astrophysical applications, it is clear the necessity 
 of coupling self-gravity to the equations of motions derived for \SPH. Instead 
 of taking the previous approach for the viscous term, we shall couple the
@@ -509,9 +507,172 @@ used for this purpose.
 
 Finally, the evolution of the fluid is reached by solving numerically the 
 differential equations leaded by the inviscid, the viscous and the gravitational 
-terms. In order to do so, some numerical integration scheme has to be adopted,
-namely a symplectic integrator or even a time integrator scheme like Runge-Kutta.
+terms and taking the initial conditions provided by the Zel'dovich approximation. 
+In order to do so, some numerical integration scheme has to be adopted, namely a 
+symplectic integrator or even a time integrator scheme like Runge-Kutta.
 
+
+\subsection*{Voronoi Particle Hydrodynamics (VPH)}
+
+Although \SPH\ is very versatile for a variety of fluid problems and the
+computational implementation is direct due to its Lagrangian nature, the density
+estimation based on the kernel interpolant formalism exhibits some problems. 
+Namely \SPH\ fails in recovering the total volume, i.e. the sum of all the 
+volume elements of the sampling particles is not equal to the volume of the
+simulation, and the smoothing of the density field across contact discontinuities
+generates non-desirable spurious suppressions.
+
+\
+
+Several modifications of the original formulation of \SPH\ have been proposed in
+order to improve the accuracy. Among them is very interesting the one proposed 
+by \citet{Hess10}, in which is introduced a new estimative of the density field 
+based on a Voronoi tesellation of the sampling particles. Tessellations 
+techniques have been previously introduced as estimators of physical fields in
+simulations (see e.g. Delaunay Tessellation Field Estimator DTFE by 
+\citet{Schaap00}) with more accurate results than kernel interpolants of \SPH\
+\citep{Pelupessy03}.
+
+\
+%.........................................................................
+%FIGURE 3: Tesselations
+\begin{figure}[h]
+\centering
+
+  \includegraphics[trim = 0mm 0mm 0mm 0mm, clip, keepaspectratio=true,
+  width=0.7\textheight]{./figures/Tessellations.png}
+  
+  \caption{\small Estimation techniques of the density field. Original 
+  dataset (first). Delaunay tessellation (second). Voronoi tessellation 
+  (third). Spherical kernel volumes (fourth). }
+
+  \label{fig:Tessellations}
+
+\end{figure}
+%.........................................................................
+
+Although Delaunay tessellation was first introduced for field estimation, it 
+exhibits some problems that makes it unsuitable for some pathological 
+situations. Due to the definition of a Delaunay triangulation, where no point 
+of the dataset must be inside the circumcircle of any triangle of the 
+tessellation (see Fig. \ref{fig:Tessellations}), there may be more than a 
+triangulation for a same dataset, besides the volumes of the polyhedra do not 
+change continuously with the coordinates of the particles as they evolve, 
+generating non-desirable discontinuities in the hydrodynamical equations.
+
+\
+
+A Voronoi tessellation is defined as a set of adjacent polyhedra outlined by
+the bisector planes of neighbour points of the dataset (see Fig. 
+\ref{fig:Tessellations}). This definition makes unique the tessellation 
+associated to a dataset and does not generate discontinuities in the 
+estimations. For these reasons, the Voronoi tessellation is preferable for 
+field estimation in the context of hydrodynamics, as established by 
+\citet{Hess10}.
+
+
+\subsubsection*{Equation of Motions}
+
+Starting from the discretized Lagrangian \ref{eq:LagrangianDiscrete} and 
+applying Euler-Lagrange variational equations, we obtain:
+
+\begin{eqnarray}
+\nonumber{}
+m_i \frac{d \bds v_i}{dt} &=& - \sum_j m_j \frac{\partial u_j}{\partial \bds r_i} \\
+\label{eq:VPHLarangian}
+&=& -\sum_j m_j \frac{P}{\rho_j^2}\frac{\partial \rho_j}{\partial V_j}\frac{\partial V_j}{\partial \bds r_i}
+\end{eqnarray}
+where has been used the equation of state of an inviscid gas and the variation
+of the density has been relied on the variation of the volume of the Voronoi 
+polyhedron $V_j$ associated to the $j$th particle. The first derivative term has 
+to be computed through some estimation of the density field, the simplest one and 
+usually adopted is 
+
+\eq{DensityEstimation}
+{ \rho_i= \frac{m_i}{V_i} }
+
+%.........................................................................
+%FIGURE 4: Voronoi Volume
+\begin{figure}[h]
+\centering
+
+  \includegraphics[trim = 0mm 0mm 0mm 0mm, clip, keepaspectratio=true,
+  width=0.25\textheight]{./figures/VoronoiVolume.png}
+  
+  \caption{\small It is sketched how to evaluate the dependence of the volume
+  of a Voronoi cell on the coordinates of neighbour particles (asterisks). 
+  Vectors $\bds c_{ij}$ and $\bds e_{ij}$ needed to calculate the derivative
+  are also sketched. Taken from \citet{Hess10}. }
+
+  \label{fig:VoronoiVolume}
+
+\end{figure}
+%.........................................................................
+
+The evaluation of the second derivative term can be reached by means of a 
+geometric analysis \citep{Serrano01}, yielding:
+
+\begin{eqnarray}
+\nonumber{}
+\frac{\partial V_j}{\partial \bds r_i} &=& -A_{ij}\pr{ \frac{\bds c_{ij}}{R_{ij}}
++ \frac{\bds e_{ij}}{2} } \ \ \ \ \mbox{for}\ \ \ i\neq j \\
+\label{VoronoiVolume}
+\frac{\partial V_j}{\partial \bds r_i} &=& -\sum_{k\neq j}\frac{\partial V_k}{\bds r_i} \ \ \ \ \mbox{for}\ \ \ i=j
+\end{eqnarray}
+where $\bds e_{ij} = (\bds r_j - \bds r_i )/R_{ij}$ is a unitary vector 
+pointing from the $i$th particle to the $j$th neighbour, $A_{ij}$ is the area 
+of the Voronoi face between the cells $i$ and $j$, and $\bds c_{ij}$ is defined
+as sketched in Fig. \ref{fig:VoronoiVolume}. The expression when $i=j$ is 
+obtained by invoking volume conservation.
+
+\
+
+Finally, the equation of motion for an inviscid gas is given by
+
+\eq{VoronoiEoM}
+{ m_i \frac{d \bds v_i}{dt} = - \sum_{i\neq j}^N A_{ij}\corc{ 
+(P_i+P_j)\frac{\bds e_{ij}}{2}+(P_j-P_i)\frac{\bds c_{ij}}{R_{ij}} } }
+where the right hand term has been explicitly symmetrized. It is noteworthy that
+the summation only runs over neighbour cells as the area of the face $A_{ij}$ 
+vanishes for non-abutted cells. Unlike kernel interpolants, where the number of
+contributing terms of the summation depends on the user-defined smoothing 
+length of the kernel, Voronoi tessellations restricts naturally this number, 
+depending only on the number of faces of the Voronoi cell.
+
+\
+
+Although the Voronoi tessellation estimator improves greatly the efficiency of 
+\SPH, it is still required to use a viscous term in order to account for shock
+dynamics. As the expression \ref{eq:ViscosityTerm} for \SPH\ involves the kernel
+interpolant, it is necessary to introduce a new form of the viscous term that 
+can work with \VPH. Here we adopt the parametrization of \citet{Hess10}, 
+yielding:
+
+\eq{ViscosityTermVPH}
+{ \left. m_i\frac{d \bds v_i}{dt}\right|_{\mbox{\footnotesize visc}} =
+- \sum_{j=1}^N A_{ij} {\rho}_{ij}^2\Pi_{ij}\frac{\bds e_{ij}}{2} }
+$\rho_{ij}$ is the arithmetic mean of the densities of the $i$th and the $j$th 
+particles and the viscous tensor is given by:
+
+\eq{ViscousTensorVPH}
+{ \Pi_{ij} = \left\{ \matrix{ \corc{-\alpha c_{ij}w_{ij} + \beta w_{ij}^2}/\rho_{ij} & 
+\mbox{if} \bds v_{ij}\cdot \bds r_{ij} <0 \cr 0 & \mbox{otherwise}}\right. }
+where $w_{ij}$ is the projected pairwise velocity defined as
+
+\[ w_{ij} = \frac{ \bds v_{ij}\cdot \bds r_{ij} }{|\bds r_{ij}|} \]
+
+Note that this definition of the viscous tensor is exactly equal to the adopted 
+for \SPH, but changing $\mu_{ij}$ for $w_{ij}$ as the parameter $\mu_{ij}$ 
+depends on the smoothing length of the kernel. The parameters $\alpha$ and 
+$\beta$ are chosen like \SPH, i.e. $\alpha \sim 0.5-1.0$ and $\beta = 2\alpha$.
+
+\
+
+Finally, for the self-gravity term, note that Eqs. \ref{eq:LagrangianG} and 
+\ref{eq:GravityTerm} do not involve the kernel at all, and the summation runs
+all over the sampling particles. This implies that this term remains equal for 
+\VPH, and the same gravity solver techniques previously discussed for \SPH\ are
+equally applicable here.
 
 %==============================================================================
 \section{Methodology}
@@ -683,8 +844,7 @@ event.
 %==============================================================================
 \section{Schedule}
 %==============================================================================
-Next it is shown a table with the proposed activities scheduled for each term
-of the project.
+Next it is shown a table with the proposed activities scheduled for each term.
 
 \begin{table}[h]
 \begin{flushleft}
