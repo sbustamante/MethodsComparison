@@ -59,19 +59,21 @@ solving the dynamics of a gas for galaxy formation in a cosmological setup.
 Two families of hydro-solvers have been widely used in astrophysics, namely a
 family of Lagrangian methods, where the fluid evolution is followed by means of
 a set of sampling particles, and a second family of mesh-based methods in 
-which the evolution is performed over a fixed grid. Although these methods 
-describe well several situations, they also exhibit some weaknesses that make 
-them poor suitable for solving full hydrodynamical cosmological simulations.
-Recently, a new hydro-solver was implemented into the \AREPO\ code, solving many 
-of the weaknesses of the classic schemes and exploiting their strengths. Despite
-of the high accuracy achieved, the price to pay for this is a prohibitive 
-computing time when limited computational resources are available. We shall 
-explore a modification of the \textit{Smoothed Particle Hydrodynamic} \SPH\ scheme
-based on Voronoi tessellations for field estimation, i.e. the \textit{Voronoi 
-Particle Hydrodynamic} \VPH. This new approach improves greatly the accuracy of 
-classic Lagrangian methods, but keeping a reasonable computing time. We shall 
-compare here the physical accuracy and the computational efficiency of \VPH\ 
-with classical schemes and \AREPO.
+which the evolution is performed over a grid. Although these methods describe 
+well several situations, they also exhibit some weaknesses that make them poor 
+suitable for solving full hydrodynamical cosmological simulations. Recently, a 
+new hydro-solver was implemented into the \AREPO\ code, in principle solving 
+many of the weaknesses of the classic schemes and exploiting their strengths. 
+Despite of the high accuracy achieved, the price to pay for this is an 
+increased complexity in code development and design, making the reproducibility 
+very hard, in addition to a prohibitive computing time when limited 
+computational resources are available. We shall explore a modification of the 
+\textit{Smoothed Particle Hydrodynamic} \SPH\ scheme based on Voronoi 
+tessellations for field estimation, i.e. the \textit{Voronoi Particle 
+Hydrodynamic} \VPH. This new approach improves greatly the accuracy of classic 
+Lagrangian methods, but keeping a reasonable computing time. We shall compare 
+here the physical accuracy and the computational efficiency of \VPH\ with 
+\SPH and \AREPO.
 
 \newpage
 
@@ -80,7 +82,7 @@ with classical schemes and \AREPO.
 \section{Introduction}
 %==============================================================================
 As we understand more deeply the physical processes involved in astrophysical 
-phenomena, it becomes necessary to compute complex interactions of a ever 
+phenomena, it becomes necessary to compute complex interactions of an ever 
 increasing number of single components. Some prominent examples include 
 the large-scale Universe, galaxy evolution, stellar interior, star formation 
 and protoplanetary disk dynamics. A common aspect of these examples is that all 
@@ -90,42 +92,43 @@ of them can be regarded basically as a fluid mechanic problem.
 
 Although the development of analytical approaches has demonstrated to be a
 valuable resource for studying these processes, their increasing complexity 
-makes necessary to invoke numerical solutions as a more feasible alternative. 
+makes it necessary to invoke numerical solutions as a more feasible alternative.
 For this purpose, two different families of hydrodynamics solvers has been 
 explored and widely used by the astrophysical community. First, a family of 
-moving-mesh-based techniques (e.g. \textit{Smoothed Particle Hydrodynamics} 
+Lagrangian techniques (e.g. \textit{Smoothed Particle Hydrodynamics} 
 \SPH\ \citep{Lucy77,Gingold77}, \textit{Voronoi Particle Hydrodynamics} \VPH\ 
-\citep{Hess10}), and a second family of fixed-mesh-based techniques (e.g.
+\citep{Hess10}), and a second family of Eulerian techniques (e.g.
 \textit{Adaptive Mesh Refinement} \texttt{AMR} \citep{Berger89}).
 
 \
 
-Due to the Lagrangian character of moving-mesh methods, techniques like \SPH\ 
-are easily implemented on a computer. Furthermore, as the physical system 
-evolves, the mass particles naturally move into higher density regions, 
-providing a self-adjusting spatial resolution. Nevertheless, \SPH\ has been 
-shown to produce spurious suppression of fluid instabilities due to its 
-kernel-based density estimator, making it unsuitable to model some of the 
-dynamics accurately. On the other hand, fixed-mesh methods like \AMR\ are more 
-efficient for capturing shock dynamics. However, due to the conservative nature 
-of the hydrodynamical equations, a fixed mesh causes a lack of Galilean 
-invariance. Furthermore, the sampling of physical properties over the grid 
-introduces spurious vorticity to the fluid, making this technique poor suitable 
-for studying turbulent flows.
+Due to the their Lagrangian character, techniques like \SPH\ are easily 
+implemented on a computer. Furthermore, as the physical system evolves, 
+the mass particles naturally move into higher density regions, providing a 
+self-adjusting spatial resolution. Nevertheless, \SPH\ has been shown to 
+produce spurious suppression of fluid instabilities due to its kernel-based 
+density estimator, making it unsuitable to model some of the dynamics 
+accurately. On the other hand, fixed-mesh methods like \AMR\ are more efficient 
+for capturing shock dynamics. However, due to the conservative nature of the 
+hydrodynamical equations, a fixed mesh causes a lack of Galilean invariance. 
+Furthermore, the sampling of physical properties over the grid introduces 
+spurious vorticity to the fluid, making this technique poor suitable for 
+studying turbulent flows.
 
 \
 
 A completely new approach to solve hydrodynamical problems was introduced by 
-\citet{Springel10} and implemented into the \AREPO\ code. It combines the 
-strengths of \AMR\ and \SPH\ but overcomes many of their weaknesses, hence it 
-can be though as a mixed technique. \AREPO\ uses a moving mesh based on a 
-Voronoi tessellation defined over a set of particles that represents the fluid. 
-The geometry of the mesh resembles very closely that of the point distribution,
-retaining the self-adaptivity inherent of \SPH\ and also keeping a grid to 
-capture shocks like \AMR\ does. These features make \AREPO\ highly accurate for
-simulating a wide range of hydrodynamical problems. Nevertheless, there is a 
-price to pay for this accuracy, \AREPO\ demands a huge computing time as 
-compared with \SPH\ and even \AMR.
+\citet{Springel10} and implemented into the \AREPO\ code, i.e. an \textit{
+irregular moving mesh} (\IMM) technique. It combines the strengths of \AMR\ and 
+\SPH\ but overcomes many of their weaknesses, hence it can be though as a mixed 
+technique. \AREPO\ uses a moving mesh based on a Voronoi tessellation defined 
+over a set of particles that represents the fluid. The geometry of the mesh 
+resembles very closely that of the point distribution, retaining the 
+self-adaptivity inherent of \SPH\ and also keeping a grid to capture shocks 
+like \AMR\ does. These features make \AREPO\ highly accurate for simulating a 
+wide range of hydrodynamical problems. Nevertheless, there is a price to pay 
+for this accuracy, \IMM\ techniques demand large coding and design work as well
+as a huge computing time as compared with \SPH\ and even \AMR.
 
 \
 
@@ -134,8 +137,8 @@ A very interesting alternative was introduced by \citet{Hess10}, i.e. the
 of an implementation of \SPH\ with a modified density estimator based on the  
 \textit{Voronoi Tessellation Field Estimator} \VTFE. The new estimator
 has demonstrated to improve substantially the spurious suppression of fluid 
-instabilities as well as retaining the computational efficiency of the original 
-formulation.
+instabilities observed in classic \SPH\ as well as retaining the computational 
+efficiency and the simplicity of the implementation of the original formulation.
 
 \
 
@@ -143,9 +146,12 @@ Finally, galaxy evolution and large-scale structure formation are very rich
 astrophysical scenarios where a plethora of hydrodynamical processes can be 
 found and studied. In this fashion, cosmological simulations are quite suitable 
 for performing detailed physical and computational comparisons of all 
-above-mentioned techniques. It is especially interesting to quantify the 
+above-mentioned techniques. 
+
+
+It is especially interesting to quantify the 
 computational performance of the \VPH\ technique in terms of its physical 
-accuracy as compared with the classic approaches and \AREPO.
+accuracy as compared with the classic approaches.
 
 
 %==============================================================================
@@ -159,12 +165,13 @@ its physical accuracy for a cosmological setup.
 \subsection*{Specific Objectives}
 \begin{itemize}
 \item Evaluating the physical accuracy provided by \VPH\ for a cosmological 
-setup as compared with \AMR, \SPH\ and \AREPO.
+setup as compared with \SPH, \AMR\ and \IMM\ techniques.
 \item Exploring and quantifying the differences between \VPH\ and \AMR\ for 
 describing shock dynamics in specific hydrodynamical instabilities.
 \item Exploring and quantifying the differences of \VPH\ and \SPH\ for 
 describing turbulent flows.
-\item Measuring the computational performance of \VPH\ as compared with \AREPO.
+\item Measuring the computational performance of \VPH\ as compared with \IMM\ 
+techniques such as the implemented into \AREPO.
 \end{itemize}
 
 
@@ -186,10 +193,10 @@ solutions \citep{longair2008}.
 where $a(t)$ is the scale factor that quantifies the relative size of the 
 Universe as compared with the current epoch, $H(t)$ is defined as $H = a/
 \dot a$, $H_0$ is the current Hubble constant and the set $\Omega_i$ are the
-abundance parameters of each specie in the Universe, namely $\Omega_0 = \sum 
-\Omega_i$, $\Omega_m$ is the current abundance of matter (dark+baryon), 
-$\Omega_r$ the abundance of radiation and relativistic matter and finally 
-$\Omega_\Lambda$ is associated to the cosmological constant. This 
+abundance parameters of each specie of matter-energy in the Universe, and where 
+$\Omega_0 = \sum \Omega_i$, $\Omega_m$ is the current abundance of matter 
+(dark+baryon), $\Omega_r$ the abundance of radiation and relativistic matter 
+and finally $\Omega_\Lambda$ is associated to the cosmological constant. This
 parametrization is very convenient as all of these parameters can be estimated
 observationally \citep{Planck13XVI}.
 
@@ -313,7 +320,7 @@ where $\bds q$ is the comoving Lagrangian coordinate when fluid is not
 perturbed and $\bds{\Psi}(\bds q, t)$ is the displacement function that 
 accounts for clustering. The displacement function can be approximated as 
 $\bds{\Psi}(\bds q, t) = D(t)\bds{\Psi}(\bds q)$, where $D(t)$ is the linear 
-growth function (Eq. \ref{eq:LinearGrowth}) and $\bds{\Psi}(\bds q)$ is given 
+growth function [Eq. \ref{eq:LinearGrowth}] and $\bds{\Psi}(\bds q)$ is given 
 by:
 
 \eq{Displacement}
@@ -328,26 +335,31 @@ non-linear regime, like \SPH, \VPH, \AMR.
 
 
 \subsection*{Smoothed Particle Hydrodynamics (SPH)}
-As was previously discussed, the matter component of the Universe can be modelled
-as an inviscid and collisionless gas that follows the standard fluid equations
-\ref{eq:ContinuityEquationC}, \ref{eq:EulerEquationC}, \ref{eq:PoissonEquationC}.
-The objective of any hydrodynamic scheme is then solving these set of equations
-in a suitable way. One of the classic schemes widely used by the astrophysical 
-community for this task is the Smoothed Particle Hydrodynamics \SPH\ as 
-introduced by \citet{Lucy77} and \citet{Gingold77}.
+As was previously discussed, the dark matter component of the Universe can be 
+modelled as an inviscid and collisionless gas whereas the baryonic component as 
+a collisional and dissipative gas, both following the standard fluid equations 
+[\ref{eq:ContinuityEquationC}], [\ref{eq:EulerEquationC}], 
+[\ref{eq:PoissonEquationC}].The objective of any hydrodynamic scheme is then 
+solving these set of equations in a suitable way. One of the classic schemes 
+widely used by the astrophysical community for this task is the Smoothed 
+Particle Hydrodynamics \SPH\ as introduced by \citet{Lucy77} and 
+\citet{Gingold77}. \SPH\ solves the continuous dynamic of the fluid by first
+discretizing it into parcels, where each of these parcels samples the properties 
+of the fluid. The evolution is reached by solving the equations of motion
+directly over the moving particle-parcels. Finally, the continuous properties 
+of the gas are recovered by means of interpolation techniques.
 
 \subsubsection*{Kernel Interpolants}
 
-The core of \SPH\ is the kernel interpolant formalism, where a continuous and
-smoothed field can be recovered from a discrete set of sampling particles. For
-any physical field $F(\bds r)$ it may be defined a smoothed version $F_s(\bds r)$
-as
+The core of \SPH\ is the kernel interpolant formalism, where a continuous field 
+can be recovered from a discrete set of sampling particles. For any physical 
+field $F(\bds r)$ it may be defined a smoothed version $F_s(\bds r)$ as
 
 \eq{SmoothedF}
 { F_s(\bds r) = \int_V \bds F(\bds r')W(\bds r - \bds r'; h) d\bds r' }
 where the integral extends over the volume domain and $W(\bds r;h)$ is the 
-kernel interpolant, with $h$ being the smoothing length, which gives the volume
-associated to the kernel domain. 
+kernel interpolant, with $h$ being the smoothing length, related to the 
+integration volume and the kernel domain. 
 
 \
 
@@ -355,7 +367,8 @@ Several different expressions for the kernel can be used for obtaining the
 smoothed versions of the fields, where the only conditions to satisfy are 
 normalization $\int W(\bds r; h)d\bds r= 1$ and convergence to the Dirac delta 
 when $h\rightarrow 0$. Nevertheless, finite-range kernels like the cubic spline 
-kernel are preferred for their easy computational implementation.
+kernel are preferred for their compact support and their easy computational 
+implementation.
 
 \eq{kernel}
 { W(r; h) \equiv W\pr{ \frac{r}{2h} } = W(q) = \frac{8}{\pi}
@@ -366,19 +379,19 @@ kernel are preferred for their easy computational implementation.
 If we fix the masses of the sampling particles to be $\{m_i\}_i$, the volume
 element of each may be approximated as $\Delta \bds r_i = m_i/\rho_i$. The 
 variation of the volume hence relies on the variation of the density. The 
-integral \ref{eq:SmoothedF} can be then approximated as
+integral shown in [\ref{eq:SmoothedF}] can be then approximated as
 
 \eq{DiscreteF}
-{ F'_i \equiv F_s(\bds r_i) \approx \sum_j \frac{m_j}{\rho_j}F_j 
+{ F'_i \equiv F_s(\bds r_i) \approx \sum_j^{N_{tot}} \frac{m_j}{\rho_j}F_j 
 W(\bds r_i - \bds r_j; h_i) }
-here we use the notation $F'_i = F_s(\bds r_i)$ for the smoothed fields and
-$F_i = F(\bds r_i)$ for the originals. Although smoothed fields are defined 
+here we use the notation $F'_i = F_s(\bds r_i)$ for the smoothed fields and $F_i 
+= F(\bds r_i)$ for the original fields. Although smoothed fields are defined
 for any position, we are just interested in the positions of the sampling 
 particles $\{r_i\}$. Note that the summation runs over all particles, however, 
 due to the finite-range kernel adopted, it is reduced only to the neighbours 
 inside a sphere of radius $2h$. Hereafter, the smoothing lengths will be taken 
 as adaptive for each particle, what is necessary in order to keep a good 
-precision for high density contrasts occurring in some simulations.
+precision for high density contrasts occurring in many astrophysical situations.
 
 \
 
@@ -389,30 +402,31 @@ advantageous when dealing with sparse distributions or very rugged fields. So
 we obtain:
 
 \eq{DiffField}
-{ \mathcal{D}_i[F_s(\bds r_i)] = \sum_j\frac{m_j}{\rho_j}F_j 
+{ \mathcal{D}_i[F_s(\bds r_i)] = \sum_j^{N_{tot}}\frac{m_j}{\rho_j}F_j 
 \mathcal{D}_i[W(\bds r_i - \bds r_j; h_i)] }
-where $\mathcal{D}_i$ is any differential operator evaluated in $\bds r_i$. Note
+where $\mathcal{D}_i$ is any differential operator evaluated at $\bds r_i$. Note
 that this expression includes the possibility of $h_i$ as a function of the 
-coordinates, what is the more general case. A very useful expression is the 
+coordinates, which is the more general case. A very useful expression is the 
 divergence of the velocity field, yielding
 
 \eq{DivV}
-{ (\nabla \cdot \bds v)_i = \frac{1}{\rho_i}\sum_j m_j (\bds v_j - \bds v_i)
+{ (\nabla \cdot \bds v)_i = \frac{1}{\rho_i}\sum_j^{N_{tot}} m_j (\bds v_j - \bds v_i)
 \cdot \nabla_i W(\bds r_i - \bds r_j; h_i) }
 where vectorial identities have been used in order to symmetrize the expression.
 
-\subsubsection*{Equation of Motions}
+\subsubsection*{Equations of Motion}
 
 Once discussed the kernel interpolant formalism, we proceed to describe how to
-get the equations of motions to be solved computationally. The original approach
+get the equations of motion to be solved computationally. The original approach
 consists in dealing directly with differential operators of the fluid equations 
-\ref{eq:ContinuityEquationC} \ref{eq:EulerEquationC} \ref{eq:PoissonEquationC}
-according to the equation \ref{eq:DiffField} \citep{Lucy77,Gingold77}. Instead,
-we will take the approach first proposed by \citet{Gingold82} and further 
-developed by \citet{Springel11}. This consists of a variational derivation of
-the equations of motions by first discretizing the Lagrangian of the system. 
-The main advantage of this derivation is that it retains the conservation laws
-associated to the Hamiltonian dynamics in a natural fashion.
+[\ref{eq:ContinuityEquationC}], [\ref{eq:EulerEquationC}], 
+[\ref{eq:PoissonEquationC}] according to the equation [\ref{eq:DiffField}] 
+\citep{Lucy77,Gingold77}. Instead, we will take the approach first proposed by 
+\citet{Gingold82} and further developed by \citet{Springel11}. This consists of 
+a variational derivation of the equations of motion by first discretizing the 
+Lagrangian of the system. The main advantage of this derivation is that it 
+retains the conservation laws associated to the Hamiltonian dynamics in a 
+natural fashion.
 
 \
 
@@ -434,9 +448,9 @@ For an inviscid gas, the equation of state is given by
 \frac{P_i}{\rho_i}\frac{1}{\gamma-1} }
 where $\gamma$ is the adiabatic index, $A_i$ the specific entropy and $P_i$ the
 pressure as evaluated in the $i$th particle. Introducing this expression into
-the Lagrangian \ref{eq:LagrangianDiscrete}, considering the implicit of the
+the Lagrangian [\ref{eq:LagrangianDiscrete}], considering the implicit of the
 smoothing length with the coordinates and applying the Euler-Lagrange equations,
-it is obtained the equations of motions:
+it is obtained the equations of motion:
 
 \eq{EoMIdeal}
 { \frac{d\bds v_i}{dt}= -\sum_{j=1}^N m_j \corc{ f_i\frac{P_i}{\rho_i^2}\nabla_i
@@ -491,7 +505,7 @@ dissipation in shocks.
 \
 
 As we are interested in astrophysical applications, it is clear the necessity 
-of coupling self-gravity to the equations of motions derived for \SPH. Instead 
+of coupling self-gravity to the equations of motion derived for \SPH. Instead 
 of taking the previous approach for the viscous term, we shall couple the
 self-gravity by first introducing an associated Lagrangian term that will
 ensure the energy conservation when gravity is included.
@@ -593,9 +607,9 @@ field estimation in the context of hydrodynamics, as established by
 \citet{Hess10}.
 
 
-\subsubsection*{Equation of Motions}
+\subsubsection*{Equations of Motion}
 
-Starting from the discretized Lagrangian \ref{eq:LagrangianDiscrete} and 
+Starting from the discretized Lagrangian [\ref{eq:LagrangianDiscrete}] and 
 applying Euler-Lagrange variational equations, we obtain:
 
 \begin{eqnarray}
@@ -665,7 +679,7 @@ depending only on the number of faces of the Voronoi cell.
 
 Although the Voronoi tessellation estimator improves greatly the efficiency of 
 \SPH, it is still required to use a viscous term in order to account for shock
-dynamics. As the expression \ref{eq:ViscosityTerm} for \SPH\ involves the kernel
+dynamics. As the expression [\ref{eq:ViscosityTerm}] for \SPH\ involves the kernel
 interpolant, it is necessary to introduce a new form of the viscous term that 
 can work with \VPH. Here we adopt the parametrization of \citet{Hess10}, 
 yielding:
@@ -690,8 +704,8 @@ $\beta$ are chosen like \SPH, i.e. $\alpha \sim 0.5-1.0$ and $\beta = 2\alpha$.
 
 \
 
-Finally, for the self-gravity term, note that Eqs. \ref{eq:LagrangianG} and 
-\ref{eq:GravityTerm} do not involve the kernel at all, and the summation runs
+Finally, for the self-gravity term, note that Eqs. [\ref{eq:LagrangianG}] and 
+[\ref{eq:GravityTerm}] do not involve the kernel at all, and the summation runs
 all over the sampling particles. This implies that this term remains equal for 
 \VPH, and the same gravity solver techniques previously discussed for \SPH\ are
 equally applicable here.
@@ -778,7 +792,7 @@ and conclusions.
 
 
 %==============================================================================
-\section{Antecedents}
+\section{Previous Experience}
 %==============================================================================
 Previous activities and projects related with Numerical Cosmology have been 
 successfully carried out within the FACom group, many of these leaded by Prof. 
@@ -890,7 +904,7 @@ Next it is shown a table with the proposed activities scheduled for each term.
 
 %==============================================================================
 \bibliographystyle{latex/mn2e}
-\renewcommand{\bibname}{8\ \ \ \ Bibliography}
+\renewcommand{\bibname}{11\ \ \ \ Bibliography}
 \small
 \bibliography{references.bib}
 %==============================================================================
