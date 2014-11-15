@@ -146,12 +146,20 @@ Finally, galaxy evolution and large-scale structure formation are very rich
 astrophysical scenarios where a plethora of hydrodynamical processes can be 
 found and studied. In this fashion, cosmological simulations are quite suitable 
 for performing detailed physical and computational comparisons of all 
-above-mentioned techniques. 
-
-
-It is especially interesting to quantify the 
+above-mentioned techniques. Comparison projects are no new in this context 
+and very detailed and interesting proposals have been carried out throughout
+the last decades, i.e. the Santa Barbara Project \citep{Frenk99}, the Aquila
+project \citep{Scannapieco12}, the Agora project \citep{Kim14}. Furthermore,
+when a new scheme or code is introduced, it is common to include comparisons 
+using either astrophysical problems like Galaxy Formation or/and benchmark 
+problems in fluid mechanics like instabilities and turbulent regimes, e.g.
+\citep{Berger89}, \citep{Teyssier02}, \citep{Springel05}, \citep{Springel10}, 
+\citep{Hess10}. For us, it is especially interesting to quantify the 
 computational performance of the \VPH\ technique in terms of its physical 
-accuracy as compared with the classic approaches.
+accuracy as compared with the classic approaches for Galaxy formation in a
+cosmological context. All of these in the same fashion as \citet{Hess10} and 
+\citet{Hess12}, where \VPH\ was tested using benchmark problems as well as
+isolated Galaxy formation.
 
 
 %==============================================================================
@@ -194,7 +202,7 @@ where $a(t)$ is the scale factor that quantifies the relative size of the
 Universe as compared with the current epoch, $H(t)$ is defined as $H = a/
 \dot a$, $H_0$ is the current Hubble constant and the set $\Omega_i$ are the
 abundance parameters of each specie of matter-energy in the Universe, and where 
-$\Omega_0 = \sum \Omega_i$, $\Omega_m$ is the current abundance of matter 
+$\Omega_0 = \sum \Omega_i$. $\Omega_m$ is the current abundance of matter 
 (dark+baryon), $\Omega_r$ the abundance of radiation and relativistic matter 
 and finally $\Omega_\Lambda$ is associated to the cosmological constant. This
 parametrization is very convenient as all of these parameters can be estimated
@@ -384,14 +392,16 @@ integral shown in [\ref{eq:SmoothedF}] can be then approximated as
 \eq{DiscreteF}
 { F'_i \equiv F_s(\bds r_i) \approx \sum_j^{N_{tot}} \frac{m_j}{\rho_j}F_j 
 W(\bds r_i - \bds r_j; h_i) }
-here we use the notation $F'_i = F_s(\bds r_i)$ for the smoothed fields and $F_i 
+Here we use the notation $F'_i = F_s(\bds r_i)$ for the smoothed fields and $F_i 
 = F(\bds r_i)$ for the original fields. Although smoothed fields are defined
 for any position, we are just interested in the positions of the sampling 
-particles $\{r_i\}$. Note that the summation runs over all particles, however, 
-due to the finite-range kernel adopted, it is reduced only to the neighbours 
-inside a sphere of radius $2h$. Hereafter, the smoothing lengths will be taken 
-as adaptive for each particle, what is necessary in order to keep a good 
-precision for high density contrasts occurring in many astrophysical situations.
+particles $\{r_i\}$. Note that the summation should run over all particles as 
+we have no information on the kernel, however, if a compact kernel is adopted, 
+the number of contributing particles $N$ is reduced only to the neighbours 
+inside a sphere of radius $2h$, increasing greatly the computational performance.
+Hereafter, the smoothing lengths will be taken as adaptive for each particle, 
+what is necessary in order to keep a good precision for high density contrasts 
+occurring in many astrophysical situations.
 
 \
 
@@ -402,7 +412,7 @@ advantageous when dealing with sparse distributions or very rugged fields. So
 we obtain:
 
 \eq{DiffField}
-{ \mathcal{D}_i[F_s(\bds r_i)] = \sum_j^{N_{tot}}\frac{m_j}{\rho_j}F_j 
+{ \mathcal{D}_i[F_s(\bds r_i)] = \sum_j^{N}\frac{m_j}{\rho_j}F_j 
 \mathcal{D}_i[W(\bds r_i - \bds r_j; h_i)] }
 where $\mathcal{D}_i$ is any differential operator evaluated at $\bds r_i$. Note
 that this expression includes the possibility of $h_i$ as a function of the 
@@ -435,8 +445,8 @@ from the Lagrangian
 
 \eq{LagrangianFluid}
 { \mathcal{L} = \int \rho \pr{ \frac{v^2}{2} - u }dV }
-where $u$ carries with all the interactions of the system. Using the kernel 
-interpolant formalism, we can rewrite this expression as
+where $u$ is a potential that accounts for all the interactions in the system. 
+Using the kernel interpolant formalism, we can rewrite this expression as
 
 \eq{LagrangianDiscrete}
 { \mathcal{L} = \sum_i \pr{ \frac{1}{2}m_i v_i^2 - m_i u_i } }
@@ -448,9 +458,9 @@ For an inviscid gas, the equation of state is given by
 \frac{P_i}{\rho_i}\frac{1}{\gamma-1} }
 where $\gamma$ is the adiabatic index, $A_i$ the specific entropy and $P_i$ the
 pressure as evaluated in the $i$th particle. Introducing this expression into
-the Lagrangian [\ref{eq:LagrangianDiscrete}], considering the implicit of the
-smoothing length with the coordinates and applying the Euler-Lagrange equations,
-it is obtained the equations of motion:
+the Lagrangian [\ref{eq:LagrangianDiscrete}], considering the implicit dependence 
+of the smoothing length with the coordinates and applying the Euler-Lagrange 
+equations, one can obtain the equations of motion:
 
 \eq{EoMIdeal}
 { \frac{d\bds v_i}{dt}= -\sum_{j=1}^N m_j \corc{ f_i\frac{P_i}{\rho_i^2}\nabla_i
@@ -471,7 +481,7 @@ Namely shock dynamics, where the strict entropy conservation would generate
 undesirable oscillations. It is hence necessary to introduce a new term that 
 accounts for entropy dissipation in shocks but keeping the inviscid dynamics of
 the gas elsewhere. This new term, so-called artificial viscosity, is introduced 
-in the form or a extra term in the equation of motion as
+in the form or a extra term in the equations of motion as
 
 \eq{ViscosityTerm}
 { \left. \frac{d \bds v_i}{dt}\right|_{\mbox{\footnotesize visc}} =
@@ -488,12 +498,12 @@ with $\mu_{ij}$ defined as
 
 \[ \mu_{ij} = \frac{h_{ij}\bds v_{ij}\cdot \bds r_{ij}}{|\bds r_{ij}|^2 + 
 \epsilon h_{ij}^2} \]
-where $h_{ij}$, $\rho_{ij}$ and $c_{ij}$ are the arithmetic means of the smoothing
+where $h_{ij}$, $\rho_{ij}$ and $c_{ij}$ are the arithmetic mean of the smoothing
 length, the density and the sound speed of the $i$th and the $j$th particles 
 respectively. The softening parameter $\epsilon$ is introduced in order to avoid
 divergence when two particles come very close to each other. The parameters 
 $\alpha$ and $\beta$ quantify the strength of the viscosity term when activated.
-Usually they are chosen to be $\alpha \approx 0.5-1.0 $ and $\beta=2\alpha$.
+Usually they are chosen to be $\alpha \approx [0.5-1.0] $ and $\beta=2\alpha$.
 
 \
 
@@ -529,7 +539,7 @@ gravitation:
 
 In this equation we have enabled an adaptive softening length depending on each 
 particle position, this is necessary in order to gain a better numerical 
-convergence. One way of estimating this parameter is to related it directly with
+convergence. One way of estimating this parameter is to relate it directly with
 the smoothing length of the kernel, i.e. $\epsilon_i = \epsilon_i(h_i)$. It is 
 also noteworthy that these summations run all over the sampling particles as the 
 kernel is not involved, so summations are not restricted only to nearby neighbours. 
@@ -562,7 +572,7 @@ generates non-desirable spurious suppressions.
 
 Several modifications of the original formulation of \SPH\ have been proposed in
 order to improve the accuracy. Among them is very interesting the one proposed 
-by \citet{Hess10}, in which is introduced a new estimative of the density field 
+by \citet{Hess10}, in which they introduce a new estimative of the density field 
 based on a Voronoi tesellation of the sampling particles. Tessellations 
 techniques have been previously introduced as estimators of physical fields in
 simulations (see e.g. Delaunay Tessellation Field Estimator DTFE by 
@@ -618,7 +628,7 @@ m_i \frac{d \bds v_i}{dt} &=& - \sum_j m_j \frac{\partial u_j}{\partial \bds r_i
 \label{eq:VPHLarangian}
 &=& -\sum_j m_j \frac{P}{\rho_j^2}\frac{\partial \rho_j}{\partial V_j}\frac{\partial V_j}{\partial \bds r_i}
 \end{eqnarray}
-where has been used the equation of state of an inviscid gas and the variation
+where it has been used the equation of state of an inviscid gas and the variation
 of the density has been relied on the variation of the volume of the Voronoi 
 polyhedron $V_j$ associated to the $j$th particle. The first derivative term has 
 to be computed through some estimation of the density field, the simplest one and 
@@ -635,10 +645,10 @@ usually adopted is
   \includegraphics[trim = 0mm 0mm 0mm 0mm, clip, keepaspectratio=true,
   width=0.25\textheight]{./figures/VoronoiVolume.png}
   
-  \caption{\small It is sketched how to evaluate the dependence of the volume
-  of a Voronoi cell on the coordinates of neighbour particles (asterisks). 
-  Vectors $\bds c_{ij}$ and $\bds e_{ij}$ needed to calculate the derivative
-  are also sketched. Taken from \citet{Hess10}. }
+  \caption{\small This figure sketches how to evaluate the dependence of the 
+  volume of a Voronoi cell on the coordinates of neighbour particles 
+  (asterisks). Vectors $\bds c_{ij}$ and $\bds e_{ij}$ needed to calculate 
+  the derivative are also sketched. Taken from \citet{Hess10}. }
 
   \label{fig:VoronoiVolume}
 
@@ -700,7 +710,7 @@ where $w_{ij}$ is the projected pairwise velocity defined as
 Note that this definition of the viscous tensor is exactly equal to the adopted 
 for \SPH, but changing $\mu_{ij}$ for $w_{ij}$ as the parameter $\mu_{ij}$ 
 depends on the smoothing length of the kernel. The parameters $\alpha$ and 
-$\beta$ are chosen like \SPH, i.e. $\alpha \sim 0.5-1.0$ and $\beta = 2\alpha$.
+$\beta$ are chosen like in \SPH, i.e. $\alpha \sim [0.5-1.0]$ and $\beta = 2\alpha$.
 
 \
 
@@ -796,23 +806,23 @@ and conclusions.
 %==============================================================================
 Previous activities and projects related with Numerical Cosmology have been 
 successfully carried out within the FACom group, many of these leaded by Prof. 
-Juan Carlos Munoz-Cuartas. This demonstrates the broad research expertise of the 
-supervisor in the topic and the availability of computational resources (computing
-time, software) required to perform this project satisfactorily.
+Juan Carlos Munoz-Cuartas. This demonstrates the broad research expertise of 
+the supervisor in the topic and the availability of computational resources 
+(computing time, software) required to perform this project satisfactorily.
 
 \
 
-On the other hand, at the present the student has already some of the fundamental 
-knowledge in Astrophysics and Cosmology required for this investigation. This can 
-be confirmed by his research experience, including a paper (as co-author) 
-published in the ApJL in which the kinematics of the Local Group in a cosmological 
-context was studied, another paper (as co-author) published in the ApJ where the 
-influence of thermal evolution on the magnetic habitability of rocky planets was 
-studied, and some participations in academic congresses. Furthermore, a Bachelor’s 
-thesis where the preferred place of simulated Local Group-like systems in the 
-cosmic web was studied, also demonstrates the ability of the applicant for 
-handling simulations and massive data, a skill that is necessary for carrying out 
-this project.
+On the other hand, at the present the student involved in this project has 
+already some of the fundamental knowledge in Astrophysics and Cosmology required 
+for this investigation. This can be confirmed by his research experience, 
+including a paper (as co-author) published in the ApJL in which the kinematics 
+of the Local Group in a cosmological context was studied, another paper (as 
+co-author) published in the ApJ where the influence of thermal evolution on the 
+magnetic habitability of rocky planets was studied, and some participations in 
+academic congresses. Furthermore, a Bachelor’s thesis where the preferred place 
+of simulated Local Group-like systems in the cosmic web was studied, also 
+demonstrates the ability of the applicant for handling simulations and massive 
+data, a skill that is necessary for carrying out this project.
 
 \
 
@@ -871,9 +881,11 @@ cosmological setups and over standard benchmark problems in fluid mechanics.
 \item A set of cosmological simulations computed by using each of the studied
 techniques.
 \item A M.Sc. thesis.
-\item Submitting a first-author paper to an international journal.
+\item Submitting a paper to an international journal.
 \item Participating with a poster or an oral presentation in an international
 event.
+\item A detailed study on the behaviour of \VPH\ in a cosmological setup and 
+its comparison to \SPH.
 \end{itemize}
 
 
