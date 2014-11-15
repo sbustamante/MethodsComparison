@@ -151,15 +151,15 @@ and very detailed and interesting proposals have been carried out throughout
 the last decades, i.e. the Santa Barbara Project \citep{Frenk99}, the Aquila
 project \citep{Scannapieco12}, the Agora project \citep{Kim14}. Furthermore,
 when a new scheme or code is introduced, it is common to include comparisons 
-using either astrophysical problems like Galaxy Formation or/and benchmark 
+using either astrophysical problems like galaxy formation or/and benchmark 
 problems in fluid mechanics like instabilities and turbulent regimes, e.g.
 \citep{Berger89}, \citep{Teyssier02}, \citep{Springel05}, \citep{Springel10}, 
 \citep{Hess10}. For us, it is especially interesting to quantify the 
 computational performance of the \VPH\ technique in terms of its physical 
-accuracy as compared with the classic approaches for Galaxy formation in a
+accuracy as compared with the classic approaches for galaxy formation in a
 cosmological context. All of these in the same fashion as \citet{Hess10} and 
 \citet{Hess12}, where \VPH\ was tested using benchmark problems as well as
-isolated Galaxy formation.
+isolated galaxy formation.
 
 
 %==============================================================================
@@ -643,7 +643,7 @@ usually adopted is
 \centering
 
   \includegraphics[trim = 0mm 0mm 0mm 0mm, clip, keepaspectratio=true,
-  width=0.25\textheight]{./figures/VoronoiVolume.png}
+  width=0.35\textheight]{./figures/VoronoiVolume.png}
   
   \caption{\small This figure sketches how to evaluate the dependence of the 
   volume of a Voronoi cell on the coordinates of neighbour particles 
@@ -720,6 +720,96 @@ all over the sampling particles. This implies that this term remains equal for
 \VPH, and the same gravity solver techniques previously discussed for \SPH\ are
 equally applicable here.
 
+
+\subsection*{Problem Statement}
+
+As above-mentioned, although \SPH\ is very versatile and has an easy computational
+implementation, it also exhibits serious problems when one wants to recover an 
+accurate and faithful fluid physics. The main source of these problems is the 
+same heart of the method, the kernel interpolants. When simulating the behaviour
+of the interface of two fluids with different densities, and depending upon the 
+velocity regime of each, different instabilities may be developed (e.g. 
+Kelvin-Helmholtz, Rayleigh-Taylor). Also when the fluid is in supersonic regime,
+instabilities like shock-waves arise. These instabilities usually feature strong
+discontinuities in the fluid properties, situation that cannot be properly 
+handled by kernel interpolants, where necessarily the averaging procedure with 
+nearest neighbours would suppress these instabilities and would inhibit entropy
+production.
+
+\
+
+All the latter imply a structural deficiency in \SPH\ rather than a resolution
+or implementation problem. With this aim, \VPH\ is introduced as a more feasible
+alternative, where the density estimator procedure is completely reformulated
+in order to solve those ill situations.
+
+\
+
+Among the most striking results of \VPH\ compared with \SPH\ is the physical 
+accuracy reached when simulating a Kelvin-Helmholtz instability (figure 11 of 
+\citet{Hess10}):
+
+%.........................................................................
+%FIGURE 5: KH instability
+\begin{figure}[h]
+\centering
+
+  \includegraphics[trim = 0mm 0mm 0mm 0mm, clip, keepaspectratio=true,
+  width=0.6\textheight]{./figures/KH-Insbaility.png}
+  
+  \caption{\small Entropy production for a Kelvin-Helmholtz instability for
+  \VPH\ (left panel) and \SPH\ (right panel). It can be noticed the 
+  suppression of entropy production by poor mixing for \SPH. Taken from
+  figure 11 of \citet{Hess10}.}
+
+  \label{fig:KHinstability}
+
+\end{figure}
+%.........................................................................
+
+
+Using others benchmark problems like the sod shock tube, spurious surface
+tensions, point explosions, \citet{Hess10} also demonstrate the goodness
+of \VPH\ for dealing with the weaknesses of \SPH. Another posterior result
+more related with the objectives of our project is a comparison of \VPH\ and
+\SPH\ for isolated galaxy formation \citep{Hess12} (see figure 
+\ref{fig:Galaxy}). They found some qualitative differences between both
+schemes, specially at low redshifts and low resolutions for star formation 
+rates. For high resolutions and high redshifts they exhibit a good 
+agreement.
+
+\
+
+In this fashion, our project is an extension of these previous results, 
+but framing galaxy formation into a cosmological context. This will enrich
+the hydrodynamical processes occurring in galaxy formation as it enables 
+inflow streams and environmental interactions, thereby being a more 
+accurate approach. Comparisons with other hydrodynamical solvers like 
+\AMR\ and \AREPO\ are also important as these schemes exhibit other 
+differences with \VPH\ which can be exploited in order to quantify the
+accuracy and the computational performance in other physical situations.
+
+%.........................................................................
+%FIGURE 6: Isolated Galaxy Formation
+\begin{figure}[h]
+\centering
+
+  \includegraphics[trim = 0mm 0mm 0mm 0mm, clip, keepaspectratio=true,
+  width=0.58\textheight]{./figures/Galaxy.png}
+  
+  \caption{\small Projected gas density maps at $t=0.5h^{-1}$Gyr (left panels)
+  and projected mass density of newly formed stars (right panels), for \SPH\ 
+  (upper panels) and \VPH\ (lower panels). Taken from figure 3 and figure 4
+  \citet{Hess12}.}
+
+  \label{fig:Galaxy}
+
+\end{figure}
+%.........................................................................
+
+
+
+\newpage
 %==============================================================================
 \section{Methodology}
 %==============================================================================
