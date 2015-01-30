@@ -133,9 +133,11 @@ int GalCos_load_Gadget(int *unclust, int *sacum, char *infile)
   
   if(task == 0)
     {
-      
-      sprintf(buff,"%s%s",infile,".grp");
-      aux_pf = fopen(buff,"r");
+
+      sprintf(buff,"%s%s",infile,".grp");      
+      if( !(aux_pf = fopen(buff,"r")) ){
+	    printf("load_gadget cannot open %s\n",buff);
+	    exit(0);}
       fscanf(aux_pf,"%d",&auxint);
       
       if(auxint != Npart_Total)

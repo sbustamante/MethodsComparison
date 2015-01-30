@@ -146,7 +146,10 @@ int main(int argc, char *argv[])
   global_acum = 0;
   for(s=0; s<NSNAPS; s++)
     {
-      sprintf(buf,"%s.%d",snapbase,s);
+      //Filename of current file
+      sprintf( buf,"%s.%d",snapbase,s );
+      if( NSNAPS == 1 )
+	  sprintf( buf,"%s",snapbase );
       
       if(s==0)
 	read_head0(buf);
@@ -197,16 +200,16 @@ int main(int argc, char *argv[])
 	  fread(&pos[0],sizeof(float),3,fp_pos);
 	  fread(&vel[0],sizeof(float),3,fp_vel);
 	  fread(&id,sizeof(int),1,fp_ids);
+ 
+	  Part[i].pos[0] = pos[0];
+	  Part[i].pos[1] = pos[1];
+	  Part[i].pos[2] = pos[2];
 	  
-	  Part[id].pos[0] = pos[0];
-	  Part[id].pos[1] = pos[1];
-	  Part[id].pos[2] = pos[2];
+	  Part[i].vel[0] = vel[0];
+	  Part[i].vel[1] = vel[1];
+	  Part[i].vel[2] = vel[2];
 	  
-	  Part[id].vel[0] = vel[0];
-	  Part[id].vel[1] = vel[1];
-	  Part[id].vel[2] = vel[2];
-	  
-	  Part[id].id = id;
+	  Part[i].id = id;
 	  
 	  global_acum++;
 	}
@@ -226,11 +229,11 @@ int main(int argc, char *argv[])
   /*                         writing in gadget 1 format !!             */
   ///////////////////////////////////////////////////////////////////////
   
-  
+
   Gheader.npart[1] = Gheader.npartTotal[1];
   Gheader.num_files = 1;
   
-  sprintf(outfile,"%s%s",snapbase,"_FullSnap.gad2");
+  sprintf(outfile,"%s%s",snapbase,".FullSnap.gad1");
   
   printf("writing\n");
 

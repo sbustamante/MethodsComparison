@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
       printf(" >> LOADING PARTICLE DATA FROM GADGET FILE...\n"); fflush(stdout);
       
       GalCos_load_Gadget(&UNCLUSTERED,&NCLUSTERS,infile);
-      
+
       
       printf("\n %g Memory in particles = %g %d\n",sizeof(struct part)/(1024*1024.0),
 	     Npart_Total*sizeof(struct part)/(1024*1024.0),Npart_Total); fflush(stdout);

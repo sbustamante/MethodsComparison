@@ -1,17 +1,27 @@
 #!/bin/bash
 
-# SNAPBASE="/home/sbustamante/box20VPH/SPH_064/snap__010"
+#Snapbase
 SNAPBASE="$HOME/data/SPH_064/snap__135"
-# SNAPBASE="./snapshot_007"
+#Number of snapshots
 SNAPFILES=1
+#Axis for cut
 AXIS=0
+#Coordinate of slide
 SLIDE=10000
+#Thickness of slide
 DX=1000
+#Jump in sampling
 SAMPLING=1
+#Output filename
 OUTPUT="temp.tmp"
+#Type of particles
 TYPE=0			#[ 0-all      1-gas      2-DM ]
+#Linking lenght
 LINKING=0.2
+#Minimum number of considered particles for FOF
 MINIMPART=30
+
+
 
 #Running Cutter [ 1 ]
 if [ $1 -eq 1 ]; then
@@ -33,5 +43,30 @@ elif [ $1 -eq 3 ]; then
     make Halos
     #Running code
     time ./Halos.out $SNAPBASE $SNAPFILES $OUTPUT $TYPE $LINKING $MINIMPART
+
+#Running DomainIdentifier [ 3 ]
+elif [ $1 -eq 4 ]; then
+    #Recompliling
+    rm ./g2tog1.out 
+    make g2tog1
+    cd ./domain_identifier/
+    rm ./Domain_identifier.x
+    make Domain_identifier
+    cd -
+    
+    #Converting G2 format to G1
+    time ./g2tog1.out $SNAPBASE $SNAPFILES
+    
+    #Calculating Catalog of Halos
+    cp fof.grp "$SNAPBASE.FullSnap.gad1.grp"
+    
+    #Running DomainIdentifier
+    printf "\n\n\n===================================================="
+    printf "\nDOMAIN IDENTIFIER\n"
+    printf "====================================================\n\n\n"
+    time ./domain_identifier/Domain_identifier.x "$SNAPBASE.FullSnap.gad1" ./domain_identifier/parameters.dat 1
+    #Deleting tmp file
+    rm "$SNAPBASE.FullSnap.gad1"
+    rm "$SNAPBASE.FullSnap.gad1.grp"
     
 fi
