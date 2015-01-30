@@ -416,8 +416,8 @@ int main(int argc, char *argv[])
       
     }//if task == 0
   
-  MPI_Finalize();
-  exit(0);
+  //MPI_Finalize();
+  //exit(0);
   
   MPI_Barrier(MPI_COMM_WORLD);
   //////////////////////////////////////////////////////////////
