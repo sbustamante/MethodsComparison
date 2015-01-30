@@ -12,7 +12,6 @@ int read_head( char *filename )
     int i, Npart_Total = 0, dummi;
     char label[4];
     FILE *fp_inp;
-    struct gadget_head Gheader;
 
     //Opening input file
     if( (fp_inp=fopen(filename,"r"))==NULL ){
@@ -81,7 +80,7 @@ int read_head( char *filename )
  INPUTS:     Snapbase of the current snapshot, number of single component files,
 	     type of particle to be read:   0-ALL      1-GAS      2-DARK MATTER
  RETURN:     number of particles in the snap (0 if some error)
- COMMENTS:   Based on the version by Juan Carlos Munoz-Cuartas
+ COMMENTS:   Based on the version of Juan Carlos Munoz-Cuartas
 **************************************************************************************************/
 int read_snap( char snapbase[NMAX1], 
 	       int filenumber,
@@ -96,9 +95,7 @@ int read_snap( char snapbase[NMAX1],
     long int blksize_all,
 	     blksize_pos, blksize_vel, blksize_ids, 
 	     blksize_mss, blksize_ene, blksize_rho;
-    
-    struct gadget_head header1;
-    
+        
     FILE *fp_pos;
     FILE *fp_vel;
     FILE *fp_ids;
@@ -144,7 +141,7 @@ int read_snap( char snapbase[NMAX1],
 	fread(&dummi,sizeof(dummi),1,fp_head);
 	fread(&dummi,sizeof(dummi),1,fp_head);
 	fread(&dummi,sizeof(dummi),1,fp_head);
-	fread(&header1,sizeof(header1),1,fp_head);
+	fread(&Gheader,sizeof(Gheader),1,fp_head);
 	fread(&dummi,sizeof(dummi),1,fp_head);
 	fclose(fp_head);
 	
@@ -152,12 +149,12 @@ int read_snap( char snapbase[NMAX1],
 	Npart_snap = 0;
 	Npart_snap_mass = 0;
 	for(i=0; i<6; i++){
-	    Npart_snap += header1.npart[i];
-	    if( header1.mass[i] == 0.0 )
-		Npart_snap_mass += header1.npart[i];}
+	    Npart_snap += Gheader.npart[i];
+	    if( Gheader.mass[i] == 0.0 )
+		Npart_snap_mass += Gheader.npart[i];}
 				
 	//Seeking different blocks in the snapshot file in order to read them
-	blksize_all = 6*sizeof(int)  + 1*4*sizeof(char) + sizeof(header1);
+	blksize_all = 6*sizeof(int)  + 1*4*sizeof(char) + sizeof(Gheader);
 	//Position
 	blksize_pos = blksize_all;
 	fseek(fp_pos,blksize_pos,SEEK_SET);
@@ -196,7 +193,7 @@ int read_snap( char snapbase[NMAX1],
 	fread(&label,sizeof(char),4,fp_ene);
 	printf( "Block %s\n", label );
 	blksize_ene += 3*sizeof(int)  + 1*4*sizeof(char);
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + header1.npart[0]*sizeof(float);
+	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + Gheader.npart[0]*sizeof(float);
 	
 	//Density
 	blksize_rho = blksize_all;
@@ -204,33 +201,33 @@ int read_snap( char snapbase[NMAX1],
 	fread(&label,sizeof(char),4,fp_rho);
 	printf( "Block %s\n", label );
 	blksize_rho += 3*sizeof(int)  + 1*4*sizeof(char);
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + header1.npart[0]*sizeof(float);
+	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + Gheader.npart[0]*sizeof(float);
 
 	//Other blocks=============================================================================
 	fseek(fp_rho,blksize_all,SEEK_SET);
 	fread(&label,sizeof(char),4,fp_rho);
 	printf( "Block %s\n", label );
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + header1.npart[0]*sizeof(float);
+	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + Gheader.npart[0]*sizeof(float);
 	
 	fseek(fp_rho,blksize_all,SEEK_SET);
 	fread(&label,sizeof(char),4,fp_rho);
 	printf( "Block %s\n", label );
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + header1.npart[0]*sizeof(float);
+	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + Gheader.npart[0]*sizeof(float);
 
 	fseek(fp_rho,blksize_all,SEEK_SET);
 	fread(&label,sizeof(char),4,fp_rho);
 	printf( "Block %s\n", label );
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + header1.npart[0]*sizeof(float);
+	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + Gheader.npart[0]*sizeof(float);
 	
 	fseek(fp_rho,blksize_all,SEEK_SET);
 	fread(&label,sizeof(char),4,fp_rho);
 	printf( "Block %s\n", label );
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + header1.npart[0]*sizeof(float);
+	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + Gheader.npart[0]*sizeof(float);
 	
 	fseek(fp_rho,blksize_all,SEEK_SET);
 	fread(&label,sizeof(char),4,fp_rho);
 	printf( "Block %s\n", label );
-	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + header1.npart[0]*sizeof(float);
+	blksize_all += 5*sizeof(int)  + 1*4*sizeof(char) + Gheader.npart[0]*sizeof(float);
 	//=========================================================================================
 	
 	//Seeking in files
@@ -243,10 +240,10 @@ int read_snap( char snapbase[NMAX1],
 	
 	//Setting only gas particles
 	if( type == 1 )
-	    Npart_snap = header1.npart[0];
+	    Npart_snap = Gheader.npart[0];
 	//Setting only dark matter particles
 	if( type == 2 )
-	    Npart_snap = header1.npart[1];
+	    Npart_snap = Gheader.npart[1];
 	
 	//Reading positions, velocities and id of each particle	
 	for(i=0; i<Npart_snap ;i++){
@@ -283,9 +280,9 @@ int read_snap( char snapbase[NMAX1],
 		Part[i].temperature = temperature( Part[i].energy );}
 	    
 	    //Redshift
-	    Part[i].z = header1.redshift;
+	    Part[i].z = Gheader.redshift;
 	    //Time
-	    Part[i].t = header1.time;
+	    Part[i].t = Gheader.time;
 	    
 	    global_acum++;}
 
@@ -307,7 +304,7 @@ int read_snap( char snapbase[NMAX1],
 /**************************************************************************************************
  NAME:	     ascii_data_gas
  FUNCTION:   This function write positions, velocities and ids and gas variables of each gas 
-	     particle onto a ascci file
+	     particle onto an ascci file
  INPUTS:     Struct with particles, number of particles, output filename, number of data sampling
  RETURN:     0
 **************************************************************************************************/
@@ -343,7 +340,7 @@ int ascii_data_gas( struct part *parts,
 
 /**************************************************************************************************
  NAME:	     ascii_data_all
- FUNCTION:   This function write positions, velocities and ids of each particle onto a ascci file
+ FUNCTION:   This function write positions, velocities and ids of each particle onto an ascci file
  INPUTS:     Struct with particles, number of particles, output filename, number of data sampling
  RETURN:     0
 **************************************************************************************************/
@@ -376,7 +373,7 @@ int ascii_data_all( struct part *parts,
 
 /**************************************************************************************************
  NAME:	     ascii_data_pos
- FUNCTION:   This function write positions of each particle onto a ascci file
+ FUNCTION:   This function write positions of each particle onto an ascci file
  INPUTS:     Struct with particles, number of particles, output filename, number of data sampling
  RETURN:     0
 **************************************************************************************************/
@@ -400,7 +397,7 @@ int ascii_data_pos( struct part *parts,
     
     for( i=0;i<Npart;i+=sampling ){
 	fprintf( out, "%1.5e\t%1.5e\t%1.5e\n", 
-		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z]);}
+		 parts[i].pos[X]/Gheader.BoxSize, parts[i].pos[Y]/Gheader.BoxSize, parts[i].pos[Z]/Gheader.BoxSize);}
     
     fclose( out );
     

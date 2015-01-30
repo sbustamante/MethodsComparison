@@ -25,6 +25,8 @@ struct part{
     float pos[3];
     float vel[3];
     int id;
+    //Halo properties
+    int id_halo;
     //Gas properties
     float mass;
     float energy;
@@ -56,6 +58,8 @@ struct part{
 
 //Particle arrays
 struct part *Part, *cutted;
+//Gadget head
+struct gadget_head Gheader;
 //Number of particles in current snap
 int Npart_snap;
 //Number of particles in current snap with variable masses

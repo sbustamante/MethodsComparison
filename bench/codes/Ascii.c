@@ -27,7 +27,7 @@ int main( int argc, char *argv[] )
         
     //Reading data from Gadget file
     Npart_snap = read_snap( snapbase, file_snap, type );
-    
+
     //Writing data
     if( type == 1 )	//Gas
 	ascii_data_gas( Part, Npart_snap, output, sampling );

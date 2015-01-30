@@ -8,5 +8,7 @@ int ascii_data_pos( struct part *, int, char *, int );
 
 //Miscellaneous Module
 long int cut_box( int, float, float );
+
+//Gas Module
 float pressure( float, float );
 float temperature( float );

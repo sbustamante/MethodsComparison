@@ -1,56 +1,49 @@
 #include <allvars.h>
 /*Usage:	
- 	   ./Cutter.out 
+ 	   ./Halos.out 
 	   *	<snapbase>
  	   *	<number of files per snap>
- 	   *	<axis> 
- 	   *	<slide>				[Mpc h^-1]
- 	   *	<dx> 				[Mpc h^-1]
- 	   *	<density of data sampling>
  	   *	<output filename> 
-	   *	<0-gas or 1-all> 
+ 	   *	<0-all or 1-gas or 2-DM>
+ 	   *	<linking lenght>
+ 	   *	<minim number of particles>
 */
 
 int main( int argc, char *argv[] )
 {
-    int i, file_snap, sampling, type;
+    int i, file_snap, type;
     long int n_slide;
+    float linking;
+    int min_parts;
 
-    int axis;
-    float slide, dx;
-    char snapbase[NMAX1], output[NMAX1];
+    char snapbase[NMAX1], output[NMAX1], cmd[NMAX1];
 
     //Snapbase filename
     sprintf( snapbase, "%s", argv[1] );
     //Number of files per snap
     file_snap = atoi( argv[2] );
-    //Axis
-    axis = atoi( argv[3] );
-    //Slide
-    slide = atof( argv[4] );
-    //Dx
-    dx = atof( argv[5] );
-    //Density of data sampling
-    sampling = atoi( argv[6] );
     //Output filename
-    sprintf( output, "%s", argv[7] );
+    sprintf( output, "%s", argv[3] );
     //Type of data
-    type = atoi( argv[8] );
-
+    type = atoi( argv[4] );
+    //Linking lenght for FOF scheme
+    linking = atof( argv[5] );
+    //Minim number of particles for constructing a halo
+    min_parts = atoi( argv[6] );
+    
     //Reading data from Gadget file
-    if( type == 0 )	//Gas
-	Npart_snap = read_snap_gas( snapbase, file_snap );
-    else		//All
-	Npart_snap = read_snap_all( snapbase, file_snap );
+    Npart_snap = read_snap( snapbase, file_snap, type );
 
-    //Cutting box
-    n_slide = cut_box( axis, slide, dx );
-
-    //Writing data
-    if( type == 0 )	//Gas
-	ascii_data_gas( cutted, n_slide, output, sampling );
-    else		//All
-	ascii_data_all( cutted, n_slide, output, sampling );
+    //Writing temporal data with positions
+    ascii_data_pos( Part, Npart_snap, "pos.tmp", 1 );
+    
+    //Runing FOF scheme
+    printf("\n==========================================================================\n");
+    printf(" Identifying Halos\n");
+    printf("==========================================================================\n");
+    sprintf( cmd, "./fofscr/fof -e %f -m %d -p %lf < ./pos.tmp", linking, min_parts, 1 );
+    system( cmd );
+    system( "rm ./pos.tmp" );
 
     return 0;
 }

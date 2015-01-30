@@ -20,7 +20,7 @@ plt.close("all")
 #==================================================================================================
 #Data Fold
 #datafold = "../../../box20VPH/"
-datafold = "../data/"
+datafold = "/data/"
 #Codes Fold
 codesfold = "./"
 
