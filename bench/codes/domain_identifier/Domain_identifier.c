@@ -698,8 +698,9 @@ int main(int argc, char *argv[])
     {
       
       aux_pf=fopen("Halo_Catalog.dat","w");
+      fprintf(aux_pf,"#X\t\tY\t\tZ\t\tMvir\t\tRvir\t\tNmem\tNdom\tNdom_abs\n");
       for(i=0; i<NCLUSTERS; i++)
-	fprintf(aux_pf,"%g %g %g %g %g %d %d %d\n",Halos[i].pos[0],Halos[i].pos[1],Halos[i].pos[2],
+	fprintf(aux_pf,"%1.6e\t%1.6e\t%1.6e\t%1.6e\t%1.6e\t%d\t%d\t%d\n",Halos[i].pos[0],Halos[i].pos[1],Halos[i].pos[2],
 		Halos[i].Mvir,Halos[i].Rvir,Halos[i].Nmembers,Halos[i].NDomain_particles,
 		Halos[i].NDomain_particles_absolute);
       fclose(aux_pf);

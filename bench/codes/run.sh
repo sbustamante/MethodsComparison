@@ -15,11 +15,14 @@ SAMPLING=1
 #Output filename
 OUTPUT="temp.tmp"
 #Type of particles
-TYPE=0			#[ 0-all      1-gas      2-DM ]
+TYPE=2			#[ 0-all      1-gas      2-DM ]
 #Linking lenght
 LINKING=0.2
 #Minimum number of considered particles for FOF
 MINIMPART=30
+#Shift gas particles 	#[ 0-False	1-True ]
+SHIFTGAS=1
+
 
 
 
@@ -42,9 +45,9 @@ elif [ $1 -eq 3 ]; then
     rm ./Halos.out
     make Halos
     #Running code
-    time ./Halos.out $SNAPBASE $SNAPFILES $OUTPUT $TYPE $LINKING $MINIMPART
+    time ./Halos.out $SNAPBASE $SNAPFILES $OUTPUT $TYPE $LINKING $MINIMPART $SHIFTGAS
 
-#Running DomainIdentifier [ 3 ]
+#Running DomainIdentifier [ 4 ]
 elif [ $1 -eq 4 ]; then
     #Recompliling
     rm ./g2tog1.out 
@@ -58,15 +61,17 @@ elif [ $1 -eq 4 ]; then
     time ./g2tog1.out $SNAPBASE $SNAPFILES
     
     #Calculating Catalog of Halos
+    bash run.sh 3
     cp fof.grp "$SNAPBASE.FullSnap.gad1.grp"
     
     #Running DomainIdentifier
     printf "\n\n\n===================================================="
     printf "\nDOMAIN IDENTIFIER\n"
     printf "====================================================\n\n\n"
-    time ./domain_identifier/Domain_identifier.x "$SNAPBASE.FullSnap.gad1" ./domain_identifier/parameters.dat 1
+    time mpiexec -n 1 ./domain_identifier/Domain_identifier.x "$SNAPBASE.FullSnap.gad1" ./domain_identifier/parameters.dat 1
     #Deleting tmp file
     rm "$SNAPBASE.FullSnap.gad1"
     rm "$SNAPBASE.FullSnap.gad1.grp"
+    rm "fof.grp"
     
 fi

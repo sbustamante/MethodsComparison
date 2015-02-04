@@ -18,42 +18,44 @@ execfile('_head.py')
 #			PARAMETERS
 #==================================================================================================
 #Simulation
-#simulation = "SPH_64"
-simulation = ""
+simulation = "SPH_064"
 #Box lenght [kpc h^-1]
 Box = 20000
 #Snapbase
-snapbase = "VPH_snap"
+snapbase = "snap"
 #Number of snapshots
 snaps = int(sys.argv[3])
 #Number of files per snap
 snapfiles = 1
 #Sampling rate
 sampling = 1
-#Type of print (gas-0	all-1)
-type = 0
+#Type of print <0-all or 1-gas or 2-DM> (This should be always set to 1)
+type = 1
 
 #Gas properties
-prop_dict = {"U":"Energy", "R":"Density", "P":"Pressure", "T":"Temperature", "M":"Mass"}
+prop_dict = {"U":"Energy", "R":"Density", "P":"Pressure", "T":"Temperature", "M":"Mass", "D":"Rdomain"}
 units = { \
 "Energy":		"(km/sec)$^2$",\
 "Density":		"$10^{10}$ h$^{-1}$M$_{\odot}$/(h$^{-1}$ kpc)$^3$",\
 "Pressure":		"Pa",\
 "Temperature":		"K",\
-"Mass":			"$10^{10}$ h$^{-1}$M$_{\odot}$"}
+"Mass":			"$10^{10}$ h$^{-1}$M$_{\odot}$",\
+"Rdomain":		"R$_{vir}$"}
 notat = { \
 "Energy":		"u",\
 "Density":		"$\\rho$",\
 "Pressure":		"P",\
 "Temperature":		"T",\
-"Mass":			"M"}	
+"Mass":			"M",\
+"Rdomain":		"R$_{dom}$"}	
 ranges = { \
 "Energy":		[ 0, 7 ],\
 "Density":		[ -12, 0 ],\
 "Pressure":		[ -22, -9 ],\
 "Temperature":		[ 2, 8 ],\
-"Mass":			[ -2, 2 ]}
-indexes = { "Energy":8, "Density":9, "Pressure":10, "Temperature":11, "Mass":7 }
+"Mass":			[ -2, 2 ],\
+"Rdomain":		[ -3, 3 ]}
+indexes = { "Energy":8, "Density":9, "Pressure":10, "Temperature":11, "Mass":7, "Rdomain":14 }
 properties = [prop_dict[prop] for prop in sys.argv[1]]	#Specific order of properties
 
 #Window parameters
@@ -66,7 +68,7 @@ prop2_hist = 5
 #Bins of 1D histograms
 bins = 28*2.
 #Bins of 2D histogram
-bins2D = 200.
+bins2D = 300.
 
 #==================================================================================================
 #			MAKING VIDEO OF EVOLUTION
@@ -103,6 +105,17 @@ for snap in snaprange:
     
     #Loading data of current snap..................................................................
     data = ascii( "%s/%s/%s"%(datafold,simulation,snapbase), snap, snapfiles, sampling, type )
+    
+    #Calculating domains...........................................................................
+    for prop in sys.argv[1]:
+	if prop == "D":
+	    data_domains = gasdomains( data[:,1], data[:,2], data[:,3], simulation, snapbase, snap, Box )
+	    data2 = np.zeros( (len(data), len(data[0])+1 ) )
+	    data2[:,:-1] = data
+	    data2[:,-1] = data_domains
+	    data = data2
+	    del data2
+	    break
     
     #Ordered properties
     property1 = np.log10(data[:,indexes[ properties[0] ]])

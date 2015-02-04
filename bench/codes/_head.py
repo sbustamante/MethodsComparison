@@ -20,7 +20,7 @@ plt.close("all")
 #==================================================================================================
 #Data Fold
 #datafold = "../../../box20VPH/"
-datafold = "/data/"
+datafold = "../data/"
 #Codes Fold
 codesfold = "./"
 
@@ -52,3 +52,31 @@ def ascii( snapbase, snap, files, sampling, type ):
     os.system( "rm temp.tmp" )
     
     return data
+  
+#..................................................................................................
+# Finding distance to nearest halo in units of virial radius
+#..................................................................................................
+def gasdomains( X, Y, Z, sim, snapbase, snap, Lbox ):
+    #Loading indexes
+    index = np.loadtxt( "%s/%s/%s__%d.domain"%(datafold, sim, snapbase, snap) )
+    #Loading catalogue of halos
+    halos = np.loadtxt( "%s/%s/%s__%d.halo_catalog"%(datafold, sim, snapbase, snap) )
+    
+    #Calculating distances normalized with virial radius
+    Ldomain = []
+    for i in xrange( 0, len(X) ):
+	#Position of domainant halo
+	Xh = halos[index[i],0]; Yh = halos[index[i],1]; Zh = halos[index[i],2]
+	#Virial radius
+	Rvir = halos[index[i],4]
+	#Distance
+	Xrel = min( abs(X[i]-Xh), abs(X[i]-Xh+Lbox), abs(X[i]-Xh-Lbox) )
+	Yrel = min( abs(Y[i]-Yh), abs(Y[i]-Yh+Lbox), abs(X[i]-Yh-Lbox) )
+	Zrel = min( abs(Z[i]-Zh), abs(Z[i]-Zh+Lbox), abs(Z[i]-Zh-Lbox) )
+	#Relative distance
+	Ldomain.append( norm([Xrel,Yrel,Zrel])/Rvir )
+	
+    Ldomain = np.array(Ldomain)
+    
+    return Ldomain
+  
