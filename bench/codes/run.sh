@@ -1,7 +1,11 @@
 #!/bin/bash
 
+#Snap
+SNAP="snap__135"
+#Simulation
+SIMULATION="SPH_064"
 #Snapbase
-SNAPBASE="$HOME/data/SPH_064/snap__135"
+SNAPBASE="$HOME/data/$SIMULATION/$SNAP"
 #Number of snapshots
 SNAPFILES=1
 #Axis for cut
@@ -71,7 +75,13 @@ elif [ $1 -eq 4 ]; then
     time mpiexec -n 1 ./domain_identifier/Domain_identifier.x "$SNAPBASE.FullSnap.gad1" ./domain_identifier/parameters.dat 1
     #Deleting tmp file
     rm "$SNAPBASE.FullSnap.gad1"
-    rm "$SNAPBASE.FullSnap.gad1.grp"
     rm "fof.grp"
+    #Creating copies of produced data
+    cp "$SNAPBASE.FullSnap.gad1.parts.rescue" "../data/$SIMULATION/$SNAP.domain"
+    rm $SNAPBASE.FullSnap.gad1.*
+    cp "Halo_Catalog.dat" "../data/$SIMULATION/$SNAP.halo_catalog"
+    rm "Halo_Catalog.dat"
+    cp "Mass_function_fof.dat" "../data/$SIMULATION/$SNAP.mass_function_fof"
+    rm "Mass_function_fof.dat"
     
 fi
