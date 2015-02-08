@@ -129,6 +129,7 @@ int main(int argc, char *argv[])
   struct gadget_head header1;
   char label[4], buf[200], outfile[200];
   long int blksize_pos,blksize_vel,blksize_ids;
+  int onlydm = atoi(argv[3]);
   
   float xmin,ymin,zmin,xmax,ymax,zmax;
   float vxmin,vymin,vzmin,vxmax,vymax,vzmax;
@@ -232,6 +233,15 @@ int main(int argc, char *argv[])
 
   Gheader.npart[1] = Gheader.npartTotal[1];
   Gheader.num_files = 1;
+  
+  //Simulating an only dark-matter file
+  if( onlydm == 1 ){
+      for( i=0; i<6; i++ ){
+	  Gheader.npart[i] = 0;
+	  Gheader.npartTotal[i] = 0;}
+    
+      Gheader.npart[1] = Npart_Total;
+      Gheader.npartTotal[1] = Npart_Total;}
   
   sprintf(outfile,"%s%s",snapbase,".FullSnap.gad1");
   

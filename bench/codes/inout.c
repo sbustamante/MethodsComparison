@@ -397,7 +397,7 @@ int ascii_data_pos( struct part *parts,
     
     for( i=0;i<Npart;i+=sampling ){
 	fprintf( out, "%1.5e\t%1.5e\t%1.5e\n", 
-		 parts[i].pos[X]/Gheader.BoxSize, parts[i].pos[Y]/Gheader.BoxSize, parts[i].pos[Z]/Gheader.BoxSize);}
+		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z]);}
     
     fclose( out );
     

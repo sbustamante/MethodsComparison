@@ -7,14 +7,15 @@
  	   *	<0-all or 1-gas or 2-DM>
  	   *	<linking lenght>
  	   *	<minim number of particles>
+ 	   *	<shift gas particles>
 */
 
 int main( int argc, char *argv[] )
 {
     int i, file_snap, type;
     long int n_slide;
-    float linking;
-    int min_parts;
+    float linking, linkingtot;
+    int min_parts, shift;
 
     char snapbase[NMAX1], output[NMAX1], cmd[NMAX1];
 
@@ -30,6 +31,8 @@ int main( int argc, char *argv[] )
     linking = atof( argv[5] );
     //Minim number of particles for constructing a halo
     min_parts = atoi( argv[6] );
+    //Shift gas particles
+    shift = atoi( argv[7] );
     
     //Reading data from Gadget file
     Npart_snap = read_snap( snapbase, file_snap, type );
@@ -41,9 +44,22 @@ int main( int argc, char *argv[] )
     printf("\n==========================================================================\n");
     printf(" Identifying Halos\n");
     printf("==========================================================================\n");
-    sprintf( cmd, "./fofscr/fof -e %f -m %d -p %lf < ./pos.tmp", linking, min_parts, 1 );
+    if( type == 0 )
+	linkingtot = linking*pow(pow(Gheader.BoxSize,3)/Npart_snap,1/3.0);
+    if( type == 1 )
+	linkingtot = linking*pow(pow(Gheader.BoxSize,3)/Gheader.npartTotal[0],1/3.0);
+    if( type == 2 )
+	linkingtot = linking*pow(pow(Gheader.BoxSize,3)/Gheader.npartTotal[1],1/3.0);
+    sprintf( cmd, "./fofscr/fof -e %f -m %d < ./pos.tmp", linkingtot, min_parts );
+    printf( "%s\n", cmd );
     system( cmd );
     system( "rm ./pos.tmp" );
+    if( shift == 1 ){
+	sprintf( cmd, "bash fof_shifter.sh %s %d %d %d", 
+		 "fof.grp", Gheader.npartTotal[0], Gheader.npartTotal[1], Gheader.npartTotal[4] );
+	system( cmd );}
+      
+    
 
     return 0;
 }

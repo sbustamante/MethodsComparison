@@ -26,6 +26,8 @@ LINKING=0.2
 MINIMPART=30
 #Shift gas particles 	#[ 0-False	1-True ]
 SHIFTGAS=1
+#Only dark matter in gadget 1 format   #[ 0-False	1-True ]
+ONLYDM=1
 
 
 
@@ -62,7 +64,7 @@ elif [ $1 -eq 4 ]; then
     cd -
     
     #Converting G2 format to G1
-    time ./g2tog1.out $SNAPBASE $SNAPFILES
+    time ./g2tog1.out $SNAPBASE $SNAPFILES $ONLYDM
     
     #Calculating Catalog of Halos
     bash run.sh 3

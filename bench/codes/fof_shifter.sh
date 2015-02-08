@@ -22,6 +22,6 @@ if [ $NGAS -ne 0 ]; then
 	echo "0" >> fof.grp.temp
     done
     
-    mv fof.grp.temp fof.grp
+    mv fof.grp.temp $FILE
 
 fi 
