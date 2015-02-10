@@ -15,7 +15,7 @@
 
 /* Some physical and astrophysical constants (in cgs units) */
 
-#define G_GRAVITY         6.672e-8   
+#define G_GRAVITY         6.672e-8
 #define HUBBLE            3.2407789e-18	/* in h/sec */
 #define HUBBLE_TIME       3.09e+17   // in sec/h
 
