@@ -38,15 +38,15 @@ int main( int argc, char *argv[] )
     type = atoi( argv[8] );
 
     //Reading data from Gadget file
-    Npart_snap = read_snap( snapbase, file_snap, type );
+    read_snap( snapbase, file_snap, type );
     //Cutting box
-    n_slide = cut_box( axis, slide, dx );
+    Npart_snap = cut_box( axis, slide, dx );
 
     //Writing data
     if( type == 1 )	//Gas
-	ascii_data_gas( cutted, n_slide, output, sampling );
+	ascii_data_gas( cutted, output, sampling );
     else		//All or DM
-	ascii_data_all( cutted, n_slide, output, sampling );
+	ascii_data_all( cutted, output, sampling );
 
     return 0;
 }

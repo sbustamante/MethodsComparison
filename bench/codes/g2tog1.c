@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
 	  Part[i].vel[1] = vel[1];
 	  Part[i].vel[2] = vel[2];
 	  
-	  Part[i].id = id;
+	  Part[i].id = i;
 	  
 	  global_acum++;
 	}
@@ -237,6 +237,7 @@ int main(int argc, char *argv[])
   //Simulating an only dark-matter file
   if( onlydm == 1 ){
       for( i=0; i<6; i++ ){
+// 	  printf( "******************MASS=%lf\n", Gheader.mass[i] );
 	  Gheader.npart[i] = 0;
 	  Gheader.npartTotal[i] = 0;}
     

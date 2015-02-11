@@ -26,15 +26,14 @@ int main( int argc, char *argv[] )
     type = atoi( argv[5] );
         
     //Reading data from Gadget file
-    Npart_snap = read_snap( snapbase, file_snap, type );
+    read_snap( snapbase, file_snap, type );
 
     //Writing data
     if( type == 1 )	//Gas
-	ascii_data_gas( Part, Npart_snap, output, sampling );
+	ascii_data_gas( Part, output, sampling );
     else		//All or DM
-	ascii_data_all( Part, Npart_snap, output, sampling );
+	ascii_data_all( Part, output, sampling, type );
     
-//     ascii_data_pos( Part, Npart_snap, output, sampling );
     
     return 0;
 }

@@ -35,10 +35,10 @@ int main( int argc, char *argv[] )
     shift = atoi( argv[7] );
     
     //Reading data from Gadget file
-    Npart_snap = read_snap( snapbase, file_snap, type );
+    read_snap( snapbase, file_snap, type );
 
     //Writing temporal data with positions
-    ascii_data_pos( Part, Npart_snap, "pos.tmp", 1 );
+    ascii_data_pos( Part, "pos.tmp", 1, type );
     
     //Runing FOF scheme
     printf("\n==========================================================================\n");
@@ -57,6 +57,7 @@ int main( int argc, char *argv[] )
     if( shift == 1 ){
 	sprintf( cmd, "bash fof_shifter.sh %s %d %d %d", 
 		 "fof.grp", Gheader.npartTotal[0], Gheader.npartTotal[1], Gheader.npartTotal[4] );
+	printf( "%s\n", cmd );
 	system( cmd );}
       
     

@@ -78,7 +78,7 @@ int read_head( char *filename )
  NAME:	     read_snap
  FUNCTION:   This function reads a complete Gadget snap (only gas particles) file in format 2.
  INPUTS:     Snapbase of the current snapshot, number of single component files,
-	     type of particle to be read:   0-ALL      1-GAS      2-DARK MATTER
+	     type of particle to be read:   0-ALL      1-GAS
  RETURN:     number of particles in the snap (0 if some error)
  COMMENTS:   Based on the version of Juan Carlos Munoz-Cuartas
 **************************************************************************************************/
@@ -89,6 +89,7 @@ int read_snap( char snapbase[NMAX1],
     int i, s, dummi, global_acum = 0;
     
     int id;
+    int Npart_snap_fin;
     float pos[3], vel[3], mass, energy, rho;
         
     char label[4], filename[NMAX1];
@@ -238,15 +239,13 @@ int read_snap( char snapbase[NMAX1],
 	fseek(fp_ene,blksize_ene,SEEK_SET);
 	fseek(fp_rho,blksize_rho,SEEK_SET);
 	
+	Npart_snap_fin = Npart_snap;
 	//Setting only gas particles
-	if( type == 1 )
-	    Npart_snap = Gheader.npart[0];
-	//Setting only dark matter particles
-	if( type == 2 )
-	    Npart_snap = Gheader.npart[1];
+	if( type == 1 ){
+	    Npart_snap_fin = Gheader.npart[0];}
 	
 	//Reading positions, velocities and id of each particle	
-	for(i=0; i<Npart_snap ;i++){
+	for(i=0; i<Npart_snap_fin ;i++){
 	    //Reading from binary files
 	    fread(&pos[0],sizeof(float),3,fp_pos);
 	    fread(&vel[0],sizeof(float),3,fp_vel);
@@ -264,7 +263,7 @@ int read_snap( char snapbase[NMAX1],
 	    Part[i].vel[1] = vel[1];
 	    Part[i].vel[2] = vel[2];
  	    //IDs
-	    Part[i].id = id;
+	    Part[i].id = i;
 	    
 	    //GAS PROPERTIES
 	    if( type == 1 ){
@@ -297,7 +296,7 @@ int read_snap( char snapbase[NMAX1],
 	printf(" End of reading from gadget file %s, %d \n",filename, global_acum);
 	printf("==========================================================================\n");}
 
-    return Npart_snap;
+    return 0;
 }
 
 
@@ -309,7 +308,6 @@ int read_snap( char snapbase[NMAX1],
  RETURN:     0
 **************************************************************************************************/
 int ascii_data_gas( struct part *parts,
-		    int Npart,
 		    char output[NMAX1],
 		    int sampling )
 {
@@ -323,7 +321,7 @@ int ascii_data_gas( struct part *parts,
     fprintf( out, 
     "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tMass\t\tU\t\tRHO\t\tP\t\tT\t\tz\t\ttime\n" );
     
-    for( i=0;i<Npart;i+=sampling ){
+    for( i=0;i<Gheader.npartTotal[0];i+=sampling ){
 	fprintf( out, 
 		 "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
 		 parts[i].id,
@@ -341,24 +339,35 @@ int ascii_data_gas( struct part *parts,
 /**************************************************************************************************
  NAME:	     ascii_data_all
  FUNCTION:   This function write positions, velocities and ids of each particle onto an ascci file
- INPUTS:     Struct with particles, number of particles, output filename, number of data sampling
+ INPUTS:     Struct with particles, number of particles, output filename, number of data sampling,
+	     type of particle to be read:   0-ALL  2-DM
  RETURN:     0
 **************************************************************************************************/
 int ascii_data_all( struct part *parts,
-		    int Npart,
 		    char output[NMAX1],
-		    int sampling )
+		    int sampling,
+		    int type )
 {
     int i;
+    int N0, Nf;
     FILE *out;
     
     //Creating output file
     out = fopen( output, "w" );
+    
+    //All particles
+    if( type == 0 ){
+	N0 = 0;
+	Nf = Npart_snap;}
+    //DM particles
+    if( type == 2 ){
+	N0 = Gheader.npartTotal[0];
+	Nf = Gheader.npartTotal[1]+Gheader.npartTotal[0];}
 
     //Writing data
     fprintf( out, "#Id\tX\t\tY\t\tZ\t\tVX\t\tVY\t\tVZ\t\tz\t\ttime\n" );
     
-    for( i=0;i<Npart;i+=sampling ){
+    for( i=N0;i<Nf;i+=sampling ){
 	fprintf( out, "%d\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\t%1.5e\n", 
 		 parts[i].id,
 		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z],
@@ -374,28 +383,43 @@ int ascii_data_all( struct part *parts,
 /**************************************************************************************************
  NAME:	     ascii_data_pos
  FUNCTION:   This function write positions of each particle onto an ascci file
- INPUTS:     Struct with particles, number of particles, output filename, number of data sampling
+ INPUTS:     Struct with particles, number of particles, output filename, number of data sampling,
+	     type of particle to be read:   0-ALL      1-GAS      2-DM
  RETURN:     0
 **************************************************************************************************/
 int ascii_data_pos( struct part *parts,
-		    int Npart,
 		    char output[NMAX1],
-		    int sampling )
+		    int sampling,
+		    int type )
 {
-    int i;
+    int i, it;
+    int N0, Nf;
     FILE *out;
     
     //Creating output file
-    out = fopen( output, "w");
+    out = fopen( output, "w" );
+    
+    //All particles
+    if( type == 0 ){
+	N0 = 0;
+	Nf = Npart_snap;}
+    //GAS particles
+    if( type == 1 ){
+	N0 = 0;
+	Nf = Gheader.npartTotal[0];}
+    //DM particles
+    if( type == 2 ){
+	N0 = Gheader.npartTotal[0];
+	Nf = Gheader.npartTotal[1]+Gheader.npartTotal[0];}
 
     //Writing data
-    fprintf( out, "%d\n", Npart/sampling ); //Points in total
-    fprintf( out, "%d\n", Npart/sampling ); //Points in DM
+    fprintf( out, "%d\n", (Nf-N0)/sampling ); //Points in total
+    fprintf( out, "%d\n", (Nf-N0)/sampling ); //Points in DM
     fprintf( out, "0\n" ); //Gas
     fprintf( out, "0.01\n" ); //Time
     fprintf( out, "0\n" ); //Nactive
     
-    for( i=0;i<Npart;i+=sampling ){
+    for( i=N0;i<Nf;i+=sampling ){
 	fprintf( out, "%1.5e\t%1.5e\t%1.5e\n", 
 		 parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z]);}
     

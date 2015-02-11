@@ -18,7 +18,7 @@ execfile('_head.py')
 #			PARAMETERS
 #==================================================================================================
 #Simulation
-simulation = "SPH_064"
+simulation = "VPH_064"
 #Box lenght [kpc h^-1]
 Box = 20000
 #Snapbase
@@ -198,7 +198,7 @@ for snap in snaprange:
 
 #Making the video
 if sys.argv[2] == "0":		#Plot
-    plt.savefig("Phase_diagram_%s.png"%(sys.argv[1]))
+    plt.savefig("Phase_diagram_%s_%s.png"%(sys.argv[1], simulation))
     plt.show()
 else:				#Video
     print 'Making movie animation.mpg - this make take a while'
