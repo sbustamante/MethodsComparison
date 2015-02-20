@@ -57,7 +57,7 @@ struct part{
 #define U_ENE		1e6			// [ (km/sec)^2 ] -> [ (m/sec)^2 ]
 
 //Particle arrays
-struct part *Part, *cutted;
+struct part *Part;
 //Gadget head
 struct gadget_head Gheader;
 //Number of particles in current snap

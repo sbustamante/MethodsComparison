@@ -5,9 +5,7 @@ int read_snap_all( char *, int );
 int ascii_data_all( struct part *, char *, int, int );
 int ascii_data_gas( struct part *, char *, int );
 int ascii_data_pos( struct part *, char *, int, int );
-
-//Miscellaneous Module
-long int cut_box( int, float, float );
+int ascii_data_slide( struct part *, char *, int, int, int, float, float );
 
 //Gas Module
 float pressure( float, float );

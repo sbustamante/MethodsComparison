@@ -427,3 +427,49 @@ int ascii_data_pos( struct part *parts,
     
     return 0;
 }
+
+
+/**************************************************************************************************
+ NAME:	     ascii_data_slide
+ FUNCTION:   This function write positions of each particle within a given slide on an ascci file
+ INPUTS:     Struct with particles, number of particles, output filename, number of data sampling,
+	     type of particle to be read:   0-ALL      1-GAS      2-DM, axis, slide value, thick.
+ RETURN:     0
+**************************************************************************************************/
+int ascii_data_slide( struct part *parts,
+		      char output[NMAX1],
+		      int sampling,
+  		      int type,
+  		      int axis,
+		      float slide,
+		      float dx )
+{
+    int i, it;
+    int N0, Nf;
+    FILE *out;
+    
+    //Creating output file
+    out = fopen( output, "w" );
+    
+    //All particles
+    if( type == 0 ){
+	N0 = 0;
+	Nf = Npart_snap;}
+    //GAS particles
+    if( type == 1 ){
+	N0 = 0;
+	Nf = Gheader.npartTotal[0];}
+    //DM particles
+    if( type == 2 ){
+	N0 = Gheader.npartTotal[0];
+	Nf = Gheader.npartTotal[1]+Gheader.npartTotal[0];}
+    
+    for( i=N0;i<Nf;i+=sampling )
+	if( Part[i].pos[axis] >= slide && Part[i].pos[axis] < slide + dx ){
+	    fprintf( out, "%1.5e\t%1.5e\t%1.5e\n", 
+		    parts[i].pos[X], parts[i].pos[Y], parts[i].pos[Z]);}
+    
+    fclose( out );
+    
+    return 0;
+}

@@ -39,14 +39,9 @@ int main( int argc, char *argv[] )
 
     //Reading data from Gadget file
     read_snap( snapbase, file_snap, type );
-    //Cutting box
-    Npart_snap = cut_box( axis, slide, dx );
 
     //Writing data
-    if( type == 1 )	//Gas
-	ascii_data_gas( cutted, output, sampling );
-    else		//All or DM
-	ascii_data_all( cutted, output, sampling );
+    ascii_data_slide( Part, output, sampling, type, axis, slide, dx );
 
     return 0;
 }
