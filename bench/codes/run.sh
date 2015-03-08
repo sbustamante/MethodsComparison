@@ -3,11 +3,24 @@
 #Snap
 SNAP="snap__135"
 #Simulation
-SIMULATION="SPH_064"
+SIMULATION="SPH_064_1"
 #Snapbase
-SNAPBASE="$HOME/data/$SIMULATION/$SNAP"
+SNAPBASE="$HOME/data/Simulations/$SIMULATION/$SNAP"
 #Number of snapshots
 SNAPFILES=1
+#Output filename
+OUTPUT="temp.tmp"
+#Type of particles  [ 0-all      1-gas      2-DM ]
+TYPE=2
+#Linking lenght
+LINKING=0.2
+#Minimum number of considered particles for FOF
+MINIMPART=30
+#Only dark matter in gadget 1 format   #[ 0-False	1-True ]
+ONLYDM=1
+#Shift gas particles 	#[ 0-False	1-True ]
+SHIFTGAS=1
+
 #Axis for cut
 AXIS=0
 #Coordinate of slide
@@ -16,20 +29,6 @@ SLIDE=10000
 DX=1000
 #Jump in sampling
 SAMPLING=1
-#Output filename
-OUTPUT="temp.tmp"
-#Type of particles
-TYPE=2			#[ 0-all      1-gas      2-DM ]
-#Linking lenght
-LINKING=0.2
-#Minimum number of considered particles for FOF
-MINIMPART=30
-#Shift gas particles 	#[ 0-False	1-True ]
-SHIFTGAS=1
-#Only dark matter in gadget 1 format   #[ 0-False	1-True ]
-ONLYDM=1
-
-
 
 
 #Running Cutter [ 1 ]
@@ -77,7 +76,7 @@ elif [ $1 -eq 4 ]; then
     time mpiexec -n 1 ./domain_identifier/Domain_identifier.x "$SNAPBASE.FullSnap.gad1" ./domain_identifier/parameters.dat 1
     #Deleting tmp file
     rm "$SNAPBASE.FullSnap.gad1"
-    rm "fof.grp"
+    mv "fof.grp" "../data/$SIMULATION/$SNAP.members"
     #Creating copies of produced data
     cp "$SNAPBASE.FullSnap.gad1.parts.rescue" "../data/$SIMULATION/$SNAP.domain"
     rm $SNAPBASE.FullSnap.gad1.*
@@ -85,5 +84,8 @@ elif [ $1 -eq 4 ]; then
     rm "Halo_Catalog.dat"
     cp "Mass_function_fof.dat" "../data/$SIMULATION/$SNAP.mass_function_fof"
     rm "Mass_function_fof.dat"
+    #Creating Ascii copy of all particles
+    time ./Ascii.out $SNAPBASE $SNAPFILES $SAMPLING $OUTPUT 0
+    mv "temp.tmp" "../data/$SIMULATION/part.dat"
     
 fi
