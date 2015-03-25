@@ -1,0 +1,10 @@
+SIMULATION,RUNNER_MACHINE,STATUS,PATH_DATA,PATH_ICs,PATH_PARAM,DESCRIPTION
+SPH_064_O,unknown,Run,~/data/Simulations @ Xminator,~/data/ICs @ Xminator,unknown,Original simulation of Steffen for SPH with resolution of 64^3 for DM+GAS.
+VPH_064_O,unknown,Run,~/data/Simulations @ Xminator,~/data/ICs @ Xminator,unknown,Original simulation of Steffen for VPH with resolution of 64^3 for DM+GAS.
+SPH_064_00,Kratos,Run,~/Simulations @ Kratos,~/data/ICs @ Xminator,~/data/ICs @ Xminator,"SPH simulation with original ICs (set 0) and resolution of 64^3 for DM+GAS, but with our own parameters. Improved MaxSizeTimestep = 0.001."
+VPH_064_00,Kratos,Run,~/Simulations @ Kratos,~/data/ICs @ Xminator,~/data/ICs @ Xminator,"VPH simulation with original ICs (set 0) and resolution of 64^3 for DM+GAS, but with our own parameters. Improved MaxSizeTimestep = 0.001."
+SPH_064_10,Kratos,Run,~/Simulations @ Kratos,~/data/ICs @ Xminator,~/data/ICs @ Xminator,SPH simulation with our own ICs (set 1) and resolution of 64^3 for DM+GAS and our own parameters. Improved MaxSizeTimestep = 0.001.
+VPH_064_10,Kratos,Run,~/Simulations @ Kratos,~/data/ICs @ Xminator,~/data/ICs @ Xminator,VPH simulation with our own ICs (set 1) and resolution of 64^3 for DM+GAS and our own parameters. Improved MaxSizeTimestep = 0.001.
+SPH_064_11,Kratos,Running,~/Simulations @ Kratos,~/data/ICs @ Xminator,~/data/ICs @ Xminator,SPH simulation with our own ICs (set 1) and resolution of 64^3 for DM+GAS and our own parameters. Improved MaxSizeTimestep = 0.001 and corrected DesNumNgb = 64 and MaxNumNgbDeviation = 5.
+VPH_064_11,Kratos,Pending,--,--,--,VPH simulation with our own ICs (set 1) and resolution of 64^3 for DM+GAS and our own parameters. Improved MaxSizeTimestep = 0.001 and corrected DesNumNgb = 64 and MaxNumNgbDeviation = 5.
+SPH_128_10,Gfif,Run,~/Simulations @ Gfif,~/ICs @ Gfif,~/ICs @ Gfif,SPH simulation with our own ICs (set 1) and resolution of 128^3 for DM+GAS and our own parameters. Improved MaxSizeTimestep = 0.001.
