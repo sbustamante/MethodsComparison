@@ -1,4 +1,4 @@
-SIMULATION,RUNNER_MACHINE,STATUS,PATH_DATA,PATH_ICs,PATH_PARAM,DESCRIPTION
+SIMULATION,RUNNER,STATUS,PATH_DATA,PATH_ICs,PATH_PARAM,DESCRIPTION
 SPH_064_O,unknown,Run,~/data/Simulations @ Xminator,~/data/ICs @ Xminator,unknown,Original simulation of Steffen for SPH with resolution of 64^3 for DM+GAS.
 VPH_064_O,unknown,Run,~/data/Simulations @ Xminator,~/data/ICs @ Xminator,unknown,Original simulation of Steffen for VPH with resolution of 64^3 for DM+GAS.
 SPH_064_00,Kratos,Run,~/Simulations @ Kratos,~/data/ICs @ Xminator,~/data/ICs @ Xminator,"SPH simulation with original ICs (set 0) and resolution of 64^3 for DM+GAS, but with our own parameters. Improved MaxSizeTimestep = 0.001."
