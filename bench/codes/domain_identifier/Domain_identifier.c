@@ -74,7 +74,7 @@ int write_rescue(char *infile)
   
   int i,*Halo_particles=NULL,*Domain_particles=NULL,j;
   FILE *pf=NULL;
-  char buf[80];
+  char buf[200];
   struct data aux;
   
   sprintf(buf,"%s%s",infile,".rescue");
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
   float Mth;
 
   char *infile=NULL, *param_file=NULL;
-  char buf[80];
+  char buf[200];
   
   MPI_Status status;
   FILE *aux_pf=NULL;
@@ -502,7 +502,7 @@ int main(int argc, char *argv[])
   
   if(task == 0)
     printf("There are %d particles in halos (Nvir)\n",NclusteredParts); fflush(stdout);
-  
+
   /* array with all particles in a halo */
   int *PartsInHalos = (int *) malloc((size_t) NclusteredParts*sizeof(int));
   
@@ -548,7 +548,7 @@ int main(int argc, char *argv[])
   
   MPI_Barrier(MPI_COMM_WORLD);
   
-  
+
   /////////////////////////////////////////////////////////////////////////////
   /*               WRITING DOMAIN INFORMATION TO RESCUE FILE                 */
   /////////////////////////////////////////////////////////////////////////////
@@ -559,7 +559,6 @@ int main(int argc, char *argv[])
       if(task == l)
 	{
 	  sprintf(buf,"%s%s",infile,".parts.rescue");
-	  
 	  if(task == 0)
 	    pf=fopen(buf,"w");
 	  else
@@ -574,7 +573,7 @@ int main(int argc, char *argv[])
       MPI_Barrier(MPI_COMM_WORLD);
       
     }
-  
+
   MPI_Barrier(MPI_COMM_WORLD);
   
   for(i=0; i<NCLUSTERS; i++)
