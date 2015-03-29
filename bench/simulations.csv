@@ -8,7 +8,7 @@ SPH_064_10,Kratos,Run,~/Simulations @ Kratos,~/data/ICs @ Xminator,~/data/ICs @ 
 VPH_064_10,Kratos,Run,~/Simulations @ Kratos,~/data/ICs @ Xminator,~/data/ICs @ Xminator,VPH simulation with our own ICs (set 1) and resolution of 64^3 for DM+GAS and our own parameters. Improved MaxSizeTimestep = 0.001.
 SPH_20_128_10,Gfif,Run,~/Simulations/older @ Gfif,~/Ics/ancient @ Gfif,~/Ics/ancient @ Gfif,SPH simulation with our own ICs (set 1) and resolution of 128^3 for DM+GAS and our own parameters. Improved MaxSizeTimestep = 0.001.
 --,--,--,--,--,--,--
-SPH_20_064_11,Gfif,Running,~/Simulations @ Gfif,~/ICs @ Gfif,~/ICs @ Gfif,SPH simulation with our own ICs (set 1) and resolution of 64^3 for DM+GAS and our own parameters. New parameters.
+SPH_20_064_11,Gfif,Run,~/Simulations @ Gfif,~/ICs @ Gfif,~/ICs @ Gfif,SPH simulation with our own ICs (set 1) and resolution of 64^3 for DM+GAS and our own parameters. New parameters.
 VPH_20_064_11,Gfif,Pending,~/Simulations @ Gfif,~/ICs @ Gfif,~/ICs @ Gfif,VPH simulation with our own ICs (set 1) and resolution of 64^3 for DM+GAS and our own parameters. New parameters.
-DM_20_064_11,Gfif,Running,~/Simulations @ Gfif,~/ICs @ Gfif,~/ICs @ Gfif,DM only simulation with our own ICs (set 1) and resolution of 64^3 and with our own parameters. New parameters.
-DM_20_128_11,Gfif,Pending,~/Simulations @ Gfif,~/ICs @ Gfif,~/ICs @ Gfif,DM only simulation with our own ICs (set 1) and resolution of 128^3 and with our own parameters. New parameters.
+DM_20_064_11,Gfif,Run,~/Simulations @ Gfif,~/ICs @ Gfif,~/ICs @ Gfif,DM only simulation with our own ICs (set 1) and resolution of 64^3 and with our own parameters. New parameters.
+DM_20_128_11,Gfif,Running,~/Simulations @ Gfif,~/ICs @ Gfif,~/ICs @ Gfif,DM only simulation with our own ICs (set 1) and resolution of 128^3 and with our own parameters. New parameters.
