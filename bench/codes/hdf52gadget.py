@@ -51,8 +51,6 @@ for i_file in xrange(number_files):
     #Particles in this file
     parts = header.attrs['NumPart_ThisFile']
     parts[2:] = 0	#Only DM and GAS particles
-    parts[0] = 10000
-    parts[1] = 10000
     N_part_file = sum(parts[2:])
     fbin.write(struct.pack('6i', *parts))
     #Masses of the particles
@@ -73,8 +71,6 @@ for i_file in xrange(number_files):
     #Particles in the simulation
     parts_tot = header.attrs['NumPart_Total']
     parts_tot[2:] = 0	#Only DM and GAS particles
-    parts_tot[0] = 10000
-    parts_tot[1] = 10000
     fbin.write(struct.pack('6i', *parts_tot))
     #Flag cooling
     flag_cooling = header.attrs['Flag_Cooling']
